@@ -101,20 +101,20 @@
       "T_eval": 38,
       "grid_size": 72,
       "deltaS_mech_Tpolicy_quantiles": {
-        "q25": 0.0036861924854329,
-        "median": 0.0107732251830692,
-        "q75": 0.015965414254420527
+        "q25": 0.0021384789186444,
+        "median": 0.0028799264617344004,
+        "q75": 0.00348298828743315
       },
       "top1_by_deltaS_mech_Tpolicy": {
-        "r_star": 1,
-        "W": 18,
+        "r_star": 2,
+        "W": 3,
         "decay_type": "flat",
         "alpha_week0": 0.5,
         "alpha_week1": 0.15,
-        "deltaS_mech_Tpolicy": 0.0248498138793078,
-        "deltaS_shock_Tpolicy": 0.005448102844452,
-        "deltaS_mech_Teval": 0.0103071457204092,
-        "deltaS_shock_Teval": 0.0037239414050203
+        "deltaS_mech_Tpolicy": 0.0047248581834257,
+        "deltaS_shock_Tpolicy": 0.0028066587094476,
+        "deltaS_mech_Teval": 0.0025537060723536,
+        "deltaS_shock_Teval": 0.00159356872155
       }
     }
   },
