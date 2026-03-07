@@ -1,0 +1,39 @@
+\section{Appendix B: Reproducibility and Code Availability}
+\label{app:b}
+
+All experiments reported in this paper were executed through a scripted,
+traceable pipeline centered on the project notebook
+\texttt{TCM-Student-Dropout\_updated.ipynb} and its exported artifact workflow.
+The complete source code and the notebook used to reproduce preprocessing,
+temporal split construction, model training/calibration,
+policy simulation, subgroup diagnostics, and artifact export are available at
+\url{https://github.com/rafa-rodriguess/TCM-Student-Dropout}
+\cite{RafaRepoTCMStudentDropout}.
+
+The repository includes instructions to regenerate the exported artifacts
+from raw OULAD inputs, including the full \texttt{outputs\_v2} package.
+This package contains both \texttt{outputs\_v2/figures} and
+\texttt{outputs\_v2/tables}, and all figures/tables referenced in the paper
+correspond to files produced by this export process.
+
+To support auditing and exact replication, the pipeline records
+artifact provenance during export (path and metadata in notebook outputs),
+plus key protocol decisions such as split settings,
+random seeds, and scenario parameters.
+In particular, the reported policy and horizon settings are explicitly tracked,
+including $r^*=1$, $W=2$, $\delta_{\mathrm{shock}}=0.2$,
+the mechanism-aware schedule (week-0 uplift $0.35$, week-1 uplift $0.10$),
+and the dual-horizon evaluation rule
+($T_{policy}=18$, $T_{eval\_metrics}=37$, with
+$T_{eval\_policy}=38$ as raw support horizon).
+
+Reproducibility should be interpreted at the level of the
+specified pipeline contract: same raw inputs + same protocol settings + same
+export workflow produce the auditable evidence package used in this manuscript.
+
+\section*{AI Disclosure}
+Generative AI tools were used for language assistance (translation and wording
+suggestions) and for brainstorming/editing support.
+No generative AI was used to generate the study data, analyses,
+results, or conclusions.
+All manuscript content was reviewed and approved by the authors.

@@ -1,0 +1,91 @@
+\documentclass[conference,a4paper]{IEEEtran}
+
+% -------------------------
+% Packages
+% -------------------------
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{amsthm}
+\usepackage{microtype} 
+\usepackage{array}
+
+\newtheorem{proposition}{Proposition}
+
+% -------------------------
+% IEEE-friendly spacing tweaks (avoid manual \vspace between sections)
+% -------------------------
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{4pt plus 2pt minus 2pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 2pt}
+
+% Help prevent overfull boxes in narrow columns (mild, IEEE-safe)
+\emergencystretch=1.5em
+
+% Allow display breaks in long derivations (conservative)
+\allowdisplaybreaks[2]
+
+\ifCLASSINFOpdf
+\else
+\fi
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\DeclareRobustCommand*{\IEEEauthorrefmark}[1]{\raisebox{0pt}[0pt][0pt]{\textsuperscript{\footnotesize #1}}}
+
+\begin{document}
+
+\title{A Mathematical Framework for Temporal Modeling and Counterfactual Policy Simulation of Student Dropout}
+
+\author{
+\IEEEauthorblockN{
+Rafael da Silva,
+Jeff Eicher,
+Gregory Longo
+}
+\IEEEauthorblockA{
+PhD in Applied Data Science Program \\
+School of Mathematics and Computational Sciences \\
+Eastern University \\
+St. Davids, PA, USA \\
+\{rafael.dasilva, jeff.eicher, gregory.longo\}@eastern.edu
+}
+}
+
+\maketitle
+
+\input{abstract_body}
+
+\begin{IEEEkeywords}
+student dropout, survival analysis, time-varying covariates, discrete-time hazard modeling, counterfactual policy simulation, learning analytics.
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+
+
+\input{introduction_body}
+\input{background_body}
+\input{methodology_body}
+\input{experimental_design_body}
+\input{results_body}
+\appendices
+\input{appendix_a_body}
+\input{appendix_b_body}
+\bibliographystyle{IEEEtran}
+\bibliography{ref}
+
+\end{document}

@@ -1,4 +1,4 @@
-# Plano de Criacao do Paper (v3)
+# Plano de Criacao do Paper (v4 sincronizado com notebook e outputs atuais)
 
 ## 1) Objetivo fixo do paper (nao muda)
 Com base em `Introduction` e `Background` (especialmente `Intervention Practice Gaps: Documentation, Evaluation, and Experimental Frictions`), o objetivo central e:
@@ -18,6 +18,102 @@ Regra de ouro para evitar mistura:
 - `Experimental Design`: como o experimento foi configurado e executado (dados, split, horizontes, metricas, robustez planejada, fluxo de avaliacao).
 - `Results and Discussion`: achados numericos/figuras/tabelas + interpretacao + limitacoes.
 
+## 2.1) Snapshot travado de sincronizacao (fonte de verdade para atualizar os `.tex`)
+Objetivo deste bloco:
+- Travar o estado atual que deve ser refletido no texto do paper, sem depender de memoria de execucao ou de nomes legados no notebook.
+
+Fontes de verdade para escrita:
+- Implementacao: `TCM-Student-Dropout_updated.ipynb`.
+- Evidencia citavel: `outputs_v2/tables/*` e `outputs_v2/figures/*`.
+- Registro compacto/reprodutibilidade: `outputs_v2/metadata.json`.
+
+### 2.1.1) Policy spec congelado: parametros, ancora e contrato de citacao
+- Fonte primaria para ancora bibliografica e definicao operacional completa da policy:
+  - `outputs_v2/tables/table_policy_spec.csv`
+  - `outputs_v2/metadata.json -> policy.policy_spec`
+- Fonte secundaria para o snapshot compacto dos parametros efetivos usados no cenario:
+  - `outputs_v2/tables/table_policy_scenario_params.csv`
+  - `outputs_v2/metadata.json -> policy.params`
+
+Estado atual congelado da policy:
+- Gatilho ancorado em `Kay & Bostock (2023) — The Power of the Nudge: Technology Driving Persistence`.
+- Definicao do gatilho: `flag if no LMS engagement in last 7 days (≈ recency>=1 week)`.
+- Frequencia do gatilho: `weekly`.
+- Proxy operacional do gatilho: `recency`, derivada de `total_clicks` (`activity_flag = 1 if total_clicks > 0`).
+- Parametro de gatilho: `r_star = 1`.
+
+Parametros efetivos congelados do cenario policy:
+- `W_weeks = 2`
+- `alpha_week0 = 0.35`
+- `alpha_week1 = 0.10`
+- `decay_type = kb2023_step_2w`
+- `window_exclusive_upper = True`
+- `delta_shock_ablation = 0.20`
+- `policy_spec_hash_short_sha256 = ffe17bf61a58`
+
+Regra de citacao importante para o `.tex`:
+- A ancora bibliografica e a definicao do gatilho devem ser citadas via `table_policy_spec.csv`, nao via `table_policy_scenario_params.csv`.
+- `table_policy_scenario_params.csv` hoje funciona como tabela compacta dos parametros efetivos de simulacao; nela, `anchor_study`, `anchor_metric_week0` e `anchor_metric_week1` permanecem vazios no export atual.
+- `anchor_window_days = 14` aparece na tabela compacta, mas a ancora textual/operacional completa esta em `table_policy_spec.csv` e em `metadata.policy.policy_spec.trigger`.
+
+### 2.1.2) Dual horizons congelados e semantica correta para o texto
+Fonte primaria:
+- `outputs_v2/tables/table_policy_horizons_dual.csv`
+- `outputs_v2/metadata.json -> policy.horizons`
+
+Horizontes congelados atuais:
+- `T_policy = 18` (`role = policy_trigger_and_contrast`, `G_t = 0.7957980376262404`).
+- `T_eval_policy = 38` (`role = trajectory_reporting_and_deltaS_tables`, `G_t = 1e-12`).
+- `T_eval_metrics = 37` (`role = stable_IPCW_metrics_only`, `G_t = 0.06007189286008718`).
+
+Regra editorial obrigatoria:
+- Quando o artefato for de policy trajectory/`Delta S`, o horizonte longo correto e `T_eval_policy = 38`.
+- Quando o artefato for de metricas IPCW, fairness agregada ou bootstrap de RQ3, o horizonte longo correto e `T_eval_metrics = 37`.
+- Alguns arquivos ainda preservam o nome legado `T_eval`; no `.tex`, sempre desambiguar pelo alias explicito do artefato:
+  - `horizon_label_explicit = T_eval_policy` em `table_policy_deltaS_at_horizons.csv` e `table_policy_support_at_horizons.csv`.
+  - `T_eval_metrics`, `horizon_explicit` e `delta_gap_Teval_metrics*` nos artefatos de RQ3.
+
+### 2.1.3) Snapshot numerico travado para Results
+RQ1 (hazard principal; `outputs_v2/tables/table_calibration_metrics.csv`):
+- `AUC_train = 0.8358500884891436`
+- `AUC_test = 0.8395774755908261`
+- `Brier_test = 0.009323056385034438`
+- `ECE_test = 0.001220699192687835`
+- `n_bins = 15`
+
+RQ2 (policy; `outputs_v2/tables/table_policy_deltaS_at_horizons.csv`):
+- Em `T_policy = 18`:
+  - `deltaS_shock = 0.025960139487519962`
+  - `deltaS_mech = -0.0006035298138894474`
+- No horizonte longo de policy (`T_eval_policy = 38`, exportado com rotulo legado `T_eval` e alias explicito `horizon_label_explicit = T_eval_policy`):
+  - `deltaS_shock = 0.024273470092421978`
+  - `deltaS_mech = -0.0062370532004405455`
+
+Diagnostico mecanistico (`outputs_v2/tables/table_policy_activation_summary.csv`):
+- `n_enrollments_total = 9778`
+- `n_enrollments_triggered = 8387`
+- `trigger_rate_enrollment = 0.8577418695029658`
+- `n_rows_active = 15190`
+- `active_rate_rows = 0.0653566649599642`
+- `effect_params_source = policy_spec.effect`
+
+RQ3 (fairness; `outputs_v2/tables/rq3_policy_gaps_unified.csv`):
+- Variavel de grupo demonstrada: `gender`.
+- Ordenacao do gap exportado: `group0 = M`, `group1 = F`.
+- `treated_enrollments = 8387`.
+- `delta_gap_Tpolicy = -0.0005081554025401225` com CI95 `[-0.0006622224097320495, -0.0003294369956812038]`.
+- Horizonte longo correto para fairness = `T_eval_metrics = 37`.
+- `delta_gap_Teval_metrics = -0.0005669118931449502` com CI95 `[-0.0007152875636654066, -0.00040727731486090997]`.
+
+Benchmark atual (`outputs_v2/tables/table_benchmark_unified.csv`):
+- `temporal_hazard_active`: `AUC_event_by_T_policy = 0.48027038264275707`, `AUC_event_by_T_eval = 0.49792261826900036`.
+- `temporal_hazard_ipcw`: `AUC_event_by_T_policy = 0.5220236385027273`, `AUC_event_by_T_eval = 0.5290683956071446`.
+- `non_temporal_rsf`: `AUC_event_by_T_policy = 0.6456593498657632`, `AUC_event_by_T_eval = 0.6388364609480998`.
+
+Regra editorial para benchmark:
+- Nao escrever que o modelo temporal "vence todos os benchmarks" no estado atual dos resultados.
+- O plano deve acomodar explicitamente que o baseline `non_temporal_rsf` domina o benchmark de `AUC_event_by_T_*`, enquanto o valor do framework temporal continua em decisao temporal auditavel, trajetorias de sobrevivencia e contrasts estruturais de regime.
+
 ## 3) O que do notebook entra em cada secao
 
 ## 3.1 Methodology (o que entra)
@@ -31,7 +127,7 @@ Blocos do notebook que entram:
 - `P7-v3`: modelo principal de hazard discreto, preprocessamento e calibracao agrupada (com controle de leakage).
 - `P7.2-v3`, `P7.3-v7`, `P7.4-v4`: track de censoring/IPCW (`G_hat_cens`, `ipcw_w`, calibracao e estabilidade por `g_min`).
 - `P9` e `P9.1`: formalizacao de benchmark track como parte do desenho metodologico.
-- `P12`, `P13-v7`, `P13.1`, `P14*`: definicao da policy (`r_star`, `W`, shock e mechanism-aware stateful), e definicao de `Delta S(t)`.
+- `P12`, `P13-v7`, `P13.1`, `P14*`, `P15.2`, `P16-v3`: definicao da policy (`r_star`, `W_weeks`, `alpha_week0`, `alpha_week1`, `decay_type`, `delta_shock_ablation`, shock e mechanism-aware stateful), congelamento do `policy_spec`, e definicao de `Delta S(t)`.
 - `P22` a `P28.2`: definicao da fairness track (gap por grupo, `Delta Gap`, bootstrap).
 
 Graphviz distribuidos nesta secao:
@@ -183,6 +279,7 @@ Objetivo deste bloco:
 - O que escrever:
   - Definir gatilho por recency e janela de ativacao.
   - Separar regime shock (escala direta do hazard) de regime mechanism-aware stateful.
+  - Declarar explicitamente que a notacao matematica pode usar `W`, mas o nome canonico exportado nos artefatos e `W_weeks`.
 - Definicoes matematicas:
   - Tempo de gatilho:
     $$
@@ -364,7 +461,7 @@ Objetivo deste bloco:
     $$
   - Resumo em horizontes:
     $$
-    \Delta S(T_{policy}),\ \Delta S(T_{eval})
+    \Delta S(T_{policy}),\ \Delta S(T_{eval\_policy})
     $$
 
 8. `3.2.8 Protocolo de Avaliacao por Subgrupo (RQ3)`
@@ -626,7 +723,7 @@ Objetivo deste bloco:
 
 - Definicao de evento/censura: `Methodology`.
 - Formula de hazard/survival/Delta S/Delta Gap: `Methodology`.
-- Parametros fixos de policy (`r_star`, `W`, `delta_shock`, schedule): `Methodology` (+ citacao curta em Design).
+- Parametros fixos de policy (`r_star`, `W_weeks`, `alpha_week0`, `alpha_week1`, `decay_type`, `window_exclusive_upper`, `delta_shock_ablation`) + ancora do gatilho via `table_policy_spec.csv`: `Methodology` (+ citacao curta em Design).
 - Contagens do split e protocolo de avaliacao: `Experimental Design`.
 - Quais metricas e por quais horizontes: `Experimental Design`.
 - Numeros finais de desempenho e contrasts: `Results and Discussion`.
@@ -646,6 +743,16 @@ Na v2 deste plano, podemos transformar isso em um checklist de escrita por parag
 - quais tabelas/figuras entram em cada subsecao,
 - e quais frases devem ser evitadas para nao introduzir ambiguidade causal.
 
+## 6.1) Artefatos obrigatorios para Methodology/Design (fora da secao de Results)
+Estes itens nao devem ser esquecidos na atualizacao dos `.tex`, mesmo quando nao aparecerem como evidencia central em `Results`.
+
+| Tipo | Arquivo exportado | Secao/Subsecao no paper | Uso correto no texto | Observacao de sincronizacao |
+|---|---|---|---|---|
+| Tabela | `outputs_v2/tables/table_policy_spec.csv` | `Methodology -> Policy Track` | Definir ancora bibliografica do gatilho, trigger rule, `r_star` e parametros efetivos do regime | Esta e a fonte primaria da ancora e do `policy_spec_hash_short_sha256` |
+| Tabela | `outputs_v2/tables/table_policy_scenario_params.csv` | `Methodology` ou `Experimental Design` (nota de reproducibilidade) | Registrar a linha compacta de parametros efetivos usados na simulacao | Nao usar esta tabela sozinha para citar ancora; os campos de ancora estao vazios no export atual |
+| Tabela | `outputs_v2/tables/table_policy_horizons_dual.csv` | `Experimental Design` e `Results` | Justificar `T_policy`, `T_eval_policy` e `T_eval_metrics` com seus papeis e `G_t` | Esta tabela deve ser a ancora semantica dos horizontes no texto |
+| Tabela | `outputs_v2/tables/table_feature_set_provenance.csv` | `Experimental Design` (ou apendice tecnico) | Congelar o conjunto de features numericas/categoricas do modelo principal | Complementa `metadata.model_provenance.hazard_feature_set` |
+
 ## 7) Vinculo explicito: arquivo exportado -> paragrafo alvo (somente itens com qualidade)
 Nota: conteudo desta secao ja foi distribuido dentro do item `3` (principalmente em `3.3`) e permanece aqui apenas como referencia rastreavel.
 
@@ -661,7 +768,7 @@ Base de selecao usada:
 | Tabela | `outputs_v2/tables/table_calibration_metrics.csv` | Herdada da mesma classificacao da figura principal de calibracao | `V. Results and Discussion -> Primary Discrete-Time Hazard Model` | Mesmo paragrafo da figura, com numeros compactos em formato de tabela | Dar suporte numerico objetivo para a curva de calibracao |
 | Tabela | `outputs_v2/tables/table_calibration_bin_support_tail3_test.csv` | Main text (nota tecnica) | `V. Results and Discussion -> Primary Discrete-Time Hazard Model` | Frase imediatamente apos a figura principal, quando discutir bins de alto risco | Tornar auditavel a leitura da cauda com suporte direto por bin (`n`, events, non-events) |
 | Figura | `outputs_v2/figures/fig_policy_deltaS_by_week_shock_vs_mech.png` | Main text (resultado central) | `V. Results and Discussion -> RQ2: Policy Simulation and Aggregate Structural Contrast` | Paragrafo logo apos definir/lembrar `Delta S(t)` | Mostrar contraste temporal entre shock e mechanism-aware |
-| Tabela | `outputs_v2/tables/table_policy_deltaS_at_horizons.csv` | Herdada da classificacao da figura central de policy | `V. Results and Discussion -> RQ2: Policy Simulation and Aggregate Structural Contrast` | Paragrafo de fechamento da subsecao RQ2 (com valores em `T_policy` e `T_eval`) | Fixar magnitudes reportadas no texto |
+| Tabela | `outputs_v2/tables/table_policy_deltaS_at_horizons.csv` | Herdada da classificacao da figura central de policy | `V. Results and Discussion -> RQ2: Policy Simulation and Aggregate Structural Contrast` | Paragrafo de fechamento da subsecao RQ2 (com valores em `T_policy` e no horizonte longo de policy; o arquivo preserva rotulo legado `T_eval`, mas o alias correto e `horizon_label_explicit = T_eval_policy`) | Fixar magnitudes reportadas no texto sem confundir com `T_eval_metrics` |
 | Figura | `outputs_v2/figures/fig_censoring_survival_G_test.png` | Main text (justificativa de horizonte) | `V. Results and Discussion -> Survival Metrics Under Censoring` | Primeiro paragrafo da subsecao, quando justificar `T_eval_policy` vs `T_eval_metrics` | Defender validade dos horizontes para metricas IPCW |
 | Tabela | `outputs_v2/tables/table_policy_horizons_dual.csv` | Herdada da classificacao da figura de censura/horizontes | `V. Results and Discussion -> Survival Metrics Under Censoring` | Paragrafo imediatamente apos a figura de `G(t)` | Tornar auditavel a decisao dos dois horizontes |
 | Tabela | `outputs_v2/tables/table_censoring_survival_G_test_by_week.csv` | Herdada da classificacao da figura de censura/horizontes | `V. Results and Discussion -> Survival Metrics Under Censoring` | Paragrafo tecnico de suporte (ou nota curta apos tabela principal) | Evidencia granular da queda de `G(t)` |
@@ -669,15 +776,15 @@ Base de selecao usada:
 ### 7.2 Itens para Apendice (qualidade tecnica boa, menor prioridade no corpo principal)
 | Tipo | Arquivo exportado | Classificacao no notebook | Secao alvo | Paragrafo alvo (onde citar) | Funcao no argumento |
 |---|---|---|---|---|---|
-| Figura | `outputs_v2/figures/fig_calibration_ipcw_reliability_test.png` | Apendice forte | `Appendix: Calibration Diagnostics` | Primeiro paragrafo da subsecao de robustez de calibracao IPCW | Mostrar ganho incremental vs baseline |
-| Tabela | `outputs_v2/tables/table_calibration_ipcw_metrics.csv` | Herdada da classificacao da figura IPCW | `Appendix: Calibration Diagnostics` | Paragrafo logo apos a figura IPCW | Quantificar diferenca de Brier/ECE |
+| Figura | `outputs_v2/figures/fig_calibration_ipcw_reliability_test.png` | Apendice forte | `Appendix: Calibration Diagnostics` | Primeiro paragrafo da subsecao de robustez de calibracao IPCW | Documentar diferenca incremental vs baseline, inclusive trade-off se houver |
+| Tabela | `outputs_v2/tables/table_calibration_ipcw_metrics.csv` | Herdada da classificacao da figura IPCW | `Appendix: Calibration Diagnostics` | Paragrafo logo apos a figura IPCW | Quantificar diferenca de AUC/Brier/ECE sem presumir melhora em todos os eixos |
 | Figura | `outputs_v2/figures/fig_policy_covariate_deltas_by_week.png` | Apendice forte | `Appendix: Policy Mechanism Diagnostics` | Paragrafo de abertura da subsecao de mecanismo | Explicar por que o regime mechanism-aware teve efeito pequeno |
 | Tabela | `outputs_v2/tables/table_policy_covariate_deltas_by_week.csv` | Herdada da classificacao da figura de mecanismo | `Appendix: Policy Mechanism Diagnostics` | Mesmo paragrafo da figura, como suporte numerico | Mostrar deltas semanais de covariaveis |
 | Tabela | `outputs_v2/tables/table_policy_activation_summary.csv` | Herdada da classificacao da figura de mecanismo | `Appendix: Policy Mechanism Diagnostics` | Paragrafo curto apos deltas por semana | Contextualizar taxa de ativacao da politica |
 | Figura | `outputs_v2/figures/fig_rq3_gap_Tpolicy.png` | Apendice | `Appendix: Fairness (RQ3)` | Paragrafo onde reporta `Delta Gap(T_policy)` com CI95 | Evidencia visual do efeito por grupo em `T_policy` |
-| Figura | `outputs_v2/figures/fig_rq3_gap_Teval.png` | Apendice | `Appendix: Fairness (RQ3)` | Paragrafo seguinte para `Delta Gap(T_eval)` | Evidencia visual em horizonte longo |
+| Figura | `outputs_v2/figures/fig_rq3_gap_Teval.png` | Apendice | `Appendix: Fairness (RQ3)` | Paragrafo seguinte para `Delta Gap(T_eval_metrics)`; o nome do arquivo preserva o rotulo legado `Teval` | Evidencia visual em horizonte longo de fairness/metricas |
 | Figura | `outputs_v2/figures/fig_rq3_bootstrap_hist_deltagap_Tpolicy.png` | Apendice | `Appendix: Fairness (RQ3)` | Paragrafo de incerteza bootstrap (apos gaps pontuais) | Auditoria da distribuicao bootstrap |
-| Figura | `outputs_v2/figures/fig_rq3_bootstrap_hist_deltagap_Teval.png` | Apendice | `Appendix: Fairness (RQ3)` | Mesmo bloco de incerteza | Confirmar estabilidade do sinal em `T_eval` |
+| Figura | `outputs_v2/figures/fig_rq3_bootstrap_hist_deltagap_Teval.png` | Apendice | `Appendix: Fairness (RQ3)` | Mesmo bloco de incerteza; ler como horizonte `T_eval_metrics` | Confirmar estabilidade do sinal no horizonte longo correto |
 | Tabela | `outputs_v2/tables/rq3_policy_bootstrap_wide.csv` | Herdada da classificacao das figuras bootstrap RQ3 | `Appendix: Fairness (RQ3)` | Paragrafo imediatamente apos histogramas | Resumir CI e estimativas por horizonte |
 | Figura | `outputs_v2/figures/fig_calibration_by_group.png` | Apendice forte | `Appendix: Fairness (RQ3)` | Paragrafo final da subsecao fairness | Mostrar calibracao por grupo |
 | Tabela | `outputs_v2/tables/rq3_fairness_extended.csv` | Herdada da classificacao da calibracao por grupo | `Appendix: Fairness (RQ3)` | Mesmo paragrafo da figura de calibracao por grupo | Consolidar metricas de fairness por grupo |
@@ -746,7 +853,7 @@ Regra de design (para todos os graficos Graphviz):
 - P{n} incluidos:
   - `P22-P24` (preparacao de grupos)
   - `P25-P27` (estimacao de gap e bootstrap)
-  - `P28` (gaps em `T_policy`/`T_eval`)
+  - `P28` (gaps em `T_policy` e em horizonte longo exportado como `T_eval`, mas semanticamente travado como `T_eval_metrics`)
   - `P28.1` (calibracao por grupo)
   - `P28.2` (metricas fairness extendidas)
 - Valor para o leitor: deixa explicito que fairness aqui e camada de validacao/subgrupo no mesmo motor de policy.
@@ -774,7 +881,7 @@ Pergunta-mestra da secao `Results`:
 | 3) Validade sob censura (IPCW/horizonte) | Objetivo exige comparacao auditavel; sem estabilidade de `G(t)` isso quebra | Justificar tecnicamente por que usar dois horizontes e por que metrica IPCW usa horizonte estavel | `fig_censoring_survival_G_test.png`, `table_policy_horizons_dual.csv`, `table_censoring_survival_G_test_by_week.csv` | `P7.2`, `P14.2`, `P17-v5` |
 | 4) Contraste de policy (RQ2) | Nucleo do paper: comparar regimes explicitos | Shock vs mechanism-aware e magnitude de `Delta S` em semana-a-semana e em horizontes | `fig_policy_deltaS_by_week_shock_vs_mech.png` + `table_policy_deltaS_at_horizons.csv` | `P13`, `P14`, `P14.3` |
 | 5) Interpretacao mecanistica (policy internals) | Evita leitura superficial do efeito | Mostrar por que mechanism-aware foi pequeno no setup default (ativacao, deltas de covariaveis) | `fig_policy_covariate_deltas_by_week.png`, `table_policy_covariate_deltas_by_week.csv`, `table_policy_activation_summary.csv` | `P13`, `P13.1` |
-| 6) Benchmark e robustez de familia de modelo | Objetivo inclui framework reutilizavel, nao um modelo fragil | Temporal e competitivo e conclusao nao depende de um baseline unico | `fig_benchmark_dual_panel_auc.png` + `table_benchmark_unified.csv` (+ Cox table) | `P9`, `P9.1`, `P17.6` |
+| 6) Benchmark e robustez de familia de modelo | Objetivo inclui framework reutilizavel, nao um modelo fragil | Comparar familias de forma honesta, inclusive quando o baseline nao-temporal domina `AUC_event_by_T_*`, sem perder a contribuicao do framework temporal para decisao auditavel | `fig_benchmark_dual_panel_auc.png` + `table_benchmark_unified.csv` (+ Cox table) | `P9`, `P9.1`, `P17.6` |
 | 7) Robustez adicional (ablation, endpoint, OOD) | Mostrar que narrativa principal sobrevive a perturbacoes | Efeito principal nao e artefato de feature set, endpoint ou run especifico | `table_ablation_m4.csv`, tabelas de endpoint sensitivity, tabela OOD | `P19.*`, `P20`, `P21*` |
 | 8) Fairness/subgrupo (RQ3) | Objetivo cita avaliacao consistente por subgrupos | Mesma politica pode alterar gap entre grupos; reportar magnitude e incerteza sem overclaim | `fig_rq3_gap_Tpolicy.png`, `fig_rq3_gap_Teval.png`, bootstrap hists + `rq3_policy_bootstrap_wide.csv`, `rq3_fairness_extended.csv` | `P25-P28.2` |
 | 9) Discussao e limites | Alinhamento com gap pratico da Introduction/Background | Reforcar "simulated regime contrast" e nao efeito causal identificado; implicacoes para experimentos institucionais futuros | Sintese dos itens 1-8 + secao explicita de limitacoes | sintese da secao V |
