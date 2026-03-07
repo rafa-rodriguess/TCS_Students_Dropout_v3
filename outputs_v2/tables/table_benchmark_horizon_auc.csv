@@ -1,0 +1,4 @@
+model,family,AUC_event_by_T_policy,AUC_event_by_T_eval,n_test_enrollments,source
+temporal_hazard_active,discrete_time,0.48027038264275707,0.49792261826900036,9778,pp_test.hazard_hat
+temporal_hazard_ipcw,discrete_time_ipcw,0.5220236385027273,0.5290683956071446,9778,pp_test.hazard_hat_ipcw
+non_temporal_rsf,non_temporal_survival,0.6456593498657632,0.6388364609480998,9778,pred_df(in_memory)

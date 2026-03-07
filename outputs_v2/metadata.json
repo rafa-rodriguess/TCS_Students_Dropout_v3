@@ -1,0 +1,129 @@
+{
+  "artifacts": {
+    "ipcw_report_pack": {
+      "report_pack_csv": "tables/table_ipcw_report_pack.csv",
+      "report_pack_deltas_csv": "tables/table_ipcw_report_pack_deltas.csv",
+      "source_tables": {
+        "p17_main": "tables/table_survival_metrics_ipcw.csv",
+        "p17_2_base_vs_ipcw": "tables/table_survival_metrics_ipcw_vs_base.csv",
+        "p17_3_1_unified": "tables/table_survival_metrics_ipcw_vs_base_unified.csv"
+      }
+    }
+  },
+  "figures": [
+    "figures/fig_policy_deltaS_by_week_shock_vs_mech.png",
+    "figures/fig_policy_survival_by_week_baseline_shock_mech.png"
+  ],
+  "policy": {
+    "deltaS_figure": "figures/fig_policy_deltaS_by_week_shock_vs_mech.png",
+    "deltaS_tables": {
+      "all": "tables/table_policy_deltaS_by_week_all.csv",
+      "mech": "tables/table_policy_deltaS_by_week_mech.csv",
+      "shock": "tables/table_policy_deltaS_by_week_shock.csv"
+    },
+    "mechanisms": [
+      "shock_ablation",
+      "mechanism_aware_anchored"
+    ],
+    "params": {
+      "W_weeks": null,
+      "alpha_week0": null,
+      "alpha_week1": null,
+      "anchor_metric_week0": "",
+      "anchor_metric_week1": "",
+      "anchor_study": "",
+      "anchor_trigger_note": "",
+      "anchor_window_days": 14,
+      "decay_type": "",
+      "delta_shock_ablation": null,
+      "window_exclusive_upper": true
+    },
+    "params_table": "tables/table_policy_scenario_params.csv",
+    "policy_spec": {
+      "trigger": {
+        "r_star": 1,
+        "trigger_anchor_definition": "flag if no LMS engagement in last 7 days (\u2248 recency>=1 week)",
+        "trigger_anchor_study": "Kay & Bostock (2023) \u2014 The Power of the Nudge: Technology Driving Persistence",
+        "recency_definition": "weeks since last active week (activity_flag = 1 if total_clicks>0)",
+        "recency_proxy_col": "total_clicks",
+        "trigger_frequency": "weekly"
+      },
+      "effect": {
+        "W": 2,
+        "alpha_week0": 0.35,
+        "alpha_week1": 0.1,
+        "decay_type": "kb2023_step_2w",
+        "window_exclusive_upper": true,
+        "delta_shock_ablation": 0.2
+      },
+      "spec_hash_short_sha256": "ffe17bf61a58"
+    },
+    "policy_spec_table": "tables/table_policy_spec.csv"
+  },
+  "tables": [
+    "tables/table_policy_deltaS_by_week_all.csv",
+    "tables/table_policy_deltaS_by_week_shock.csv",
+    "tables/table_policy_deltaS_by_week_mech.csv",
+    "tables/table_policy_scenario_params.csv",
+    "tables/table_survival_metrics_ipcw.csv",
+    "tables/table_survival_metrics_ipcw_vs_base.csv",
+    "tables/table_survival_metrics_ipcw_vs_base_unified.csv",
+    "tables/table_ipcw_report_pack_deltas.csv",
+    "tables/table_policy_deltaS_at_horizons.csv",
+    "tables/table_support_by_week.csv",
+    "tables/table_policy_horizons_dual.csv"
+  ],
+  "model_provenance": {
+    "hazard_feature_set": {
+      "numeric_features": [
+        "total_clicks",
+        "studied_credits",
+        "num_of_prev_attempts",
+        "recency",
+        "streak",
+        "submitted_this_week"
+      ],
+      "categorical_features": [
+        "week",
+        "code_module",
+        "code_presentation",
+        "highest_education",
+        "age_band",
+        "gender"
+      ],
+      "includes_submitted_this_week": true,
+      "feature_hash_short_sha256": "ab2fa95b2af7551c",
+      "feature_string_for_hash": "NUM:num_of_prev_attempts|recency|streak|studied_credits|submitted_this_week|total_clicks||CAT:age_band|code_module|code_presentation|gender|highest_education|week"
+    },
+    "rq2_sensitivity_grid": {
+      "grid_table_path": "tables/table_rq2_sensitivity_grid.csv",
+      "T_policy": 18,
+      "T_eval": 38,
+      "grid_size": 72,
+      "deltaS_mech_Tpolicy_quantiles": {
+        "q25": 0.0036861924854329,
+        "median": 0.0107732251830692,
+        "q75": 0.015965414254420527
+      },
+      "top1_by_deltaS_mech_Tpolicy": {
+        "r_star": 1,
+        "W": 18,
+        "decay_type": "flat",
+        "alpha_week0": 0.5,
+        "alpha_week1": 0.15,
+        "deltaS_mech_Tpolicy": 0.0248498138793078,
+        "deltaS_shock_Tpolicy": 0.005448102844452,
+        "deltaS_mech_Teval": 0.0103071457204092,
+        "deltaS_shock_Teval": 0.0037239414050203
+      }
+    }
+  },
+  "registered_artifacts": {
+    "survival_metrics_ipcw": "tables/table_survival_metrics_ipcw.csv",
+    "survival_metrics_ipcw_vs_base": "tables/table_survival_metrics_ipcw_vs_base.csv",
+    "survival_metrics_ipcw_vs_base_unified": "tables/table_survival_metrics_ipcw_vs_base_unified.csv"
+  },
+  "hashes": {
+    "table_survival_metrics_ipcw_vs_base_unified_sha256_short": "75ad52dd6a9f"
+  }
+}
