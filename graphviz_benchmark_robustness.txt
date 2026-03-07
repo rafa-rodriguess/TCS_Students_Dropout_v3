@@ -1,0 +1,71 @@
+// G4 — Benchmark and Robustness Battery Design
+// Compile: dot -Tpng graphviz_benchmark_robustness.txt -o fig_benchmark_robustness.png
+
+digraph benchmark_robustness {
+    rankdir=TB;
+    ranksep=0.45;
+    nodesep=0.25;
+    fontname="Helvetica"; fontsize=11;
+    node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, margin="0.15,0.08"];
+    edge [fontname="Helvetica", fontsize=9];
+
+    // --- Primary model (anchor) ---
+    PRIMARY [label="Primary track\nDiscrete-time logistic\n(calibrated, class-balanced)", fillcolor="#F8CECC", shape=doubleoctagon];
+
+    // --- Benchmark family ---
+    subgraph cluster_bench {
+        label="Benchmark Track\n(multi-family comparison)"; style="dashed"; color="#4A90D9"; fontsize=10;
+        BX1 [label="Cox time-varying\nstart–stop weekly\npenalizer=0.01", fillcolor="#D5E8D4"];
+        BX2 [label="Random Survival Forest\n(non-temporal, enrollment-level)", fillcolor="#D5E8D4"];
+        BX3 [label="HistGradientBoosting\n(temporal, tree-based)", fillcolor="#D5E8D4"];
+    }
+
+    // --- Unified evaluation ---
+    UNIFIED [label="Unified benchmark readout\naligned at T_policy=18\nand T_eval=37", fillcolor="#FFF2CC"];
+
+    // --- Ablation ---
+    subgraph cluster_ablation {
+        label="Ablation Study"; style="dashed"; color="#D97B00"; fontsize=10;
+        AB1 [label="Full feature set", fillcolor="#FFE6CC"];
+        AB2 [label="No Recency/Streak\n(-recency, -streak)", fillcolor="#FFE6CC"];
+        AB3 [label="No Activity\n(-total_clicks)", fillcolor="#FFE6CC"];
+    }
+
+    // --- OOD ---
+    subgraph cluster_ood {
+        label="Out-of-Domain\n(leave-one-run-out)"; style="dashed"; color="#9673A6"; fontsize=10;
+        OOD1 [label="Hold out one\ncourse run\n(module × presentation)", fillcolor="#E1D5E7"];
+        OOD2 [label="Train on remaining\nruns", fillcolor="#E1D5E7"];
+        OOD3 [label="Evaluate on held-out\nrun (AUC_row)", fillcolor="#E1D5E7"];
+    }
+
+    // --- Endpoint sensitivity ---
+    subgraph cluster_endpoint {
+        label="Endpoint Sensitivity"; style="dashed"; color="#007A33"; fontsize=10;
+        EP1 [label="Primary endpoint\nWithdrawn only", fillcolor="#D4EDDA"];
+        EP2 [label="Composite endpoint\nFail ∨ Withdrawn", fillcolor="#D4EDDA"];
+        EP3 [label="Same baseline risk score\nsame horizons", fillcolor="#D4EDDA"];
+    }
+
+    // --- Convergence check ---
+    CONV [label="Convergence criterion\nsign(ΔS_main) = sign(ΔS_bench)\nplus robustness-axis consistency", fillcolor="#FFF2CC", shape=doubleoctagon];
+
+    // --- Edges ---
+    PRIMARY -> UNIFIED;
+    {BX1 BX2 BX3} -> UNIFIED;
+
+    PRIMARY -> AB1;
+    AB1 -> AB2 [label="remove"];
+    AB1 -> AB3 [label="remove"];
+
+    PRIMARY -> OOD1 -> OOD2 -> OOD3;
+
+    PRIMARY -> EP1;
+    EP1 -> EP3;
+    EP2 -> EP3;
+
+    UNIFIED -> CONV;
+    {AB2 AB3} -> CONV;
+    OOD3 -> CONV;
+    EP3 -> CONV;
+}
