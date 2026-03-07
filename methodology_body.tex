@@ -73,6 +73,8 @@ T_{eval\_metrics}=\max\{t:\hat G(t)\ge g_{min}\},
 \end{equation*}
 where $T_{policy}$ denotes the main reporting horizon and $T_{eval\_policy}$ denotes the temporal support over which simulated regime trajectories are evaluated. This separation is important because policy interpretation and censoring-weighted metric stability do not necessarily operate on the same effective horizon.
 
+In the current exported protocol, these horizons are fixed as $T_{policy}=18$, $T_{eval\_policy}=38$, and $T_{eval\_metrics}=37$, with $g_{min}=0.05$ recorded as the operational stability threshold in the evidence package.
+
 \subsection{Methodological Scope and Organization by Tracks}
 
 The methodological scope of this section is the bridge
@@ -182,11 +184,11 @@ stratum_i=(E_i,\ bucket_q(time\_for\_split_i)).
 
 The implemented configuration uses $q=4$ and \texttt{test\_size}=0.30. Calibration and validation procedures further use enrollment-grouped folds via GroupKFold.
 
-This design serves two purposes. First, it prevents leakage across rows belonging to the same enrollment. Second, it preserves a controlled temporal composition across train and test partitions, which is especially important in event-time modeling.
+This design serves two purposes. First, it prevents leakage across rows belonging to the same enrollment. Second, it preserves a controlled temporal composition across train and test partitions, which is especially important in event-time modeling. The grouped validation logic is motivated by the broader concern with leakage in structured machine-learning evaluation and by cross-validation strategies for dependent data \cite{KapoorNarayanan2023LeakagePatterns,RobertsEtAl2017CrossValidationEcography}.
 
 \subsection{Primary Discrete-Time Hazard Model (RQ1)}
 
-The primary modeling track estimates weekly conditional hazard and derives survival by cumulative product:
+Following standard discrete-time event-history formulations \cite{SingerWillett1993DiscreteTimeSurvival,Allison1982DiscreteTimeMethods}, the primary modeling track estimates weekly conditional hazard and derives survival by cumulative product:
 \begin{equation}
 \label{eq:hazard_weekly}
 h_{it}=P(event_{it}=1 \mid T_i\ge t, X_{it})
@@ -196,6 +198,8 @@ In Equation~\ref{eq:hazard_weekly}, $h_{it}$ denotes the weekly instantaneous ev
 \begin{equation*}
 \text{logit}(\hat h_{it})=\beta_0+\beta^\top X_{it}
 \end{equation*}
+
+In implementation, the raw weekly probabilities are post-hoc calibrated through grouped sigmoid calibration (Platt scaling) to support interpretable hazard probabilities under the same enrollment-respecting split logic \cite{Platt1999ProbabilisticOutputs}.
 
 \begin{equation}
 \label{eq:survival_product}
@@ -216,9 +220,13 @@ The censoring component combines estimation of censoring survival with truncated
 w_{it}=\frac{1}{\max(\hat G_{it}, g_{min})}.
 \end{equation*}
 
-The protocol separates the policy reporting horizon from the technical horizon used for censoring-weighted metrics. This distinction is necessary because IPCW-based evaluation can become unstable when $\hat G(t)$ becomes too small, even if simulated regime trajectories remain computable beyond that point.
+This weighting logic follows standard survival-prediction evaluation under right censoring \cite{Graf1999AssessmentSurvivalPrediction,Gerds2006ConsistentBrier}. The protocol separates the policy reporting horizon from the technical horizon used for censoring-weighted metrics. This distinction is necessary because IPCW-based evaluation can become unstable when $\hat G(t)$ becomes too small, even if simulated regime trajectories remain computable beyond that point. In the current protocol, $g_{min}=0.05$ defines the last admissible support region for weighted metric reporting and yields $T_{eval\_metrics}=37$, while $T_{eval\_policy}=38$ is retained only as the raw support horizon for trajectory reporting.
 
 \subsection{Policy Simulation (RQ2): Shock vs. Mechanism-Aware}
+
+The current policy contract is anchored to the operational nudge rule discussed by Kay and Bostock \cite{KayBostock2023PowerNudge}. In the exported evidence package, the trigger is recorded as ``flag if no LMS engagement in last 7 days ($\approx \text{recency} \ge 1$ week)'' with weekly checking frequency and current trigger parameter $r^*=1$. This anchor is stored in the full policy specification artifact (\texttt{table\_policy\_spec.csv}) rather than in the compact scenario-parameter table.
+
+The effect schedule is frozen in the current protocol through the exported parameters $W\_\text{weeks}=2$, $\alpha_{week0}=0.35$, $\alpha_{week1}=0.10$, \texttt{decay\_type}=\texttt{kb2023\_step\_2w}, \texttt{window\_exclusive\_upper}=\texttt{True}, and \texttt{delta\_shock\_ablation}=0.20$. In the equations below, we retain the compact notation $W$ and $\delta_{shock}$ for readability, but these correspond to the canonical exported names \texttt{W\_weeks} and \texttt{delta\_shock\_ablation} in the artifact package.
 
 The intervention rule is triggered by recency crossing a threshold within an activation window:
 \begin{equation*}
@@ -311,4 +319,4 @@ Code for preprocessing, temporal splitting, training and calibration, policy sim
 \url{https://github.com/rafa-rodriguess/TCM-Student-Dropout}
 \cite{RafaRepoTCMStudentDropout}. The reference dataset used in the pipeline is OULAD \cite{Kuzilek2017OULAD}.
 
-This reproducibility layer supports the section's traceability claim by linking the formal description presented here to the implemented notebook workflow and its exported evidence artifacts.
+This reproducibility layer supports the section's traceability claim by linking the formal description presented here to the implemented notebook workflow and its exported evidence artifacts. In particular, the artifact package records the full policy contract in \texttt{table\_policy\_spec.csv}, the compact effect-parameter snapshot in \texttt{table\_policy\_scenario\_params.csv}, and the dual-horizon semantics in \texttt{table\_policy\_horizons\_dual.csv}. Under the current exported protocol, these artifacts jointly encode the anchored trigger reference, the frozen effect parameters, and the distinction between $T_{policy}=18$, $T_{eval\_policy}=38$, and $T_{eval\_metrics}=37$.
