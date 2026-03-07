@@ -1,2 +1,2 @@
 anchor_study,anchor_window_days,anchor_metric_week0,anchor_metric_week1,W_weeks,alpha_week0,alpha_week1,decay_type,window_exclusive_upper,delta_shock_ablation,anchor_trigger_note
-,14,,,,,,,True,,
+,14,,,2,0.35,0.1,kb2023_step_2w,True,0.2,

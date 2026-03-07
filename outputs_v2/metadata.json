@@ -21,21 +21,26 @@
       "mech": "tables/table_policy_deltaS_by_week_mech.csv",
       "shock": "tables/table_policy_deltaS_by_week_shock.csv"
     },
+    "horizons": {
+      "T_policy": 18,
+      "T_eval_metrics": 37,
+      "T_eval_policy": 38
+    },
     "mechanisms": [
       "shock_ablation",
       "mechanism_aware_anchored"
     ],
     "params": {
-      "W_weeks": null,
-      "alpha_week0": null,
-      "alpha_week1": null,
+      "W_weeks": 2,
+      "alpha_week0": 0.35,
+      "alpha_week1": 0.1,
       "anchor_metric_week0": "",
       "anchor_metric_week1": "",
       "anchor_study": "",
       "anchor_trigger_note": "",
       "anchor_window_days": 14,
-      "decay_type": "",
-      "delta_shock_ablation": null,
+      "decay_type": "kb2023_step_2w",
+      "delta_shock_ablation": 0.2,
       "window_exclusive_upper": true
     },
     "params_table": "tables/table_policy_scenario_params.csv",
@@ -99,6 +104,7 @@
       "grid_table_path": "tables/table_rq2_sensitivity_grid.csv",
       "T_policy": 18,
       "T_eval": 38,
+      "T_eval_policy": 38,
       "grid_size": 72,
       "deltaS_mech_Tpolicy_quantiles": {
         "q25": 0.0021384789186444,
