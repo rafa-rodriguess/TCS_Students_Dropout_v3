@@ -21,6 +21,11 @@
       "mech": "tables/table_policy_deltaS_by_week_mech.csv",
       "shock": "tables/table_policy_deltaS_by_week_shock.csv"
     },
+    "horizons": {
+      "T_policy": 18,
+      "T_eval_metrics": 37,
+      "T_eval_policy": 38
+    },
     "mechanisms": [
       "shock_ablation",
       "mechanism_aware_anchored"
@@ -99,6 +104,7 @@
       "grid_table_path": "tables/table_rq2_sensitivity_grid.csv",
       "T_policy": 18,
       "T_eval": 38,
+      "T_eval_policy": 38,
       "grid_size": 72,
       "deltaS_mech_Tpolicy_quantiles": {
         "q25": 0.0021384789186444,
