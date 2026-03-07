@@ -22,9 +22,9 @@
       "shock": "tables/table_policy_deltaS_by_week_shock.csv"
     },
     "horizons": {
-      "T_policy": 18,
       "T_eval_metrics": 37,
-      "T_eval_policy": 38
+      "T_eval_policy": 38,
+      "T_policy": 18
     },
     "mechanisms": [
       "shock_ablation",
