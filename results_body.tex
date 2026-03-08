@@ -26,7 +26,7 @@ Curves close to the diagonal indicate calibrated weekly risk. \\
 
 Policy survival by week &
 Temporal risk window (RQ1--RQ2 bridge) &
-Compare slopes and separation near $T_{policy}$ and $T_{eval}$. \\
+Compare slopes and separation near $T_{policy}$, $T_{eval\_metrics}$, and raw-support tail $T_{eval\_policy}$. \\
 
 Censoring survival $G(t)$ &
 Horizon validity under censoring &
@@ -40,9 +40,9 @@ Benchmark dual-panel AUC &
 Family robustness &
 Check directional consistency across model families. \\
 
-RQ3 gap at $T_{policy}$ and $T_{eval}$ &
+RQ3 gap at $T_{policy}$ and $T_{eval\_metrics}$ &
 RQ3 subgroup contrast &
-Read the sign and uncertainty of $\Delta Gap(T)$ at both horizons. \\
+Read the sign and uncertainty of $\Delta Gap(T)$ at $T_{policy}$ and $T_{eval\_metrics}$. \\
 \hline
 \end{tabular}
 \end{table}
@@ -64,13 +64,13 @@ Table~\ref{tab:rq_answers} gives the direct empirical answers before the detaile
 RQ & Direct answer from results \\
 \hline
 RQ1 &
-Yes. Weekly hazard discrimination is stable (AUC train 0.8358, test 0.8396), and calibration diagnostics support the use of hazard trajectories for decision timing. \\
+Yes. Weekly hazard discrimination is stable (AUC train 0.8350, test 0.8405), and calibration diagnostics support the use of hazard trajectories for decision timing. \\
 
 RQ2 &
-Yes, with clear regime dependence. At $T_{policy}=18$, the shock regime yields $\Delta S=0.0274$, while the mechanism-aware regime yields $\Delta S=0.000065$, showing that contrast magnitude depends strongly on the assumed policy mechanism. \\
+Yes, with strong scenario dependence under a fixed trigger. At $T_{policy}=18$, shock contrasts are $\Delta S=0.0102$ (anchored conservative, $\delta=0.08$), $0.0260$ (hypothetical A, $\delta=0.20$), and $0.0819$ (hypothetical B, $\delta=0.60$), while the mechanism-aware contrast is $\Delta S=-0.0006$. \\
 
 RQ3 &
-Yes, in directional terms. $\Delta Gap(18)=-0.00050816$ and $\Delta Gap(37)=-0.00056691$, with 95\% bootstrap intervals excluding zero at both horizons, indicating a robust direction under this scenario. \\
+Yes, in directional terms. $\Delta Gap(T_{policy})=-0.00050816$ and $\Delta Gap(T_{eval\_metrics})=-0.00056691$, with 95\% bootstrap intervals excluding zero at both horizons, indicating a robust direction under the reported scenario. \\
 \hline
 \end{tabular}
 \end{table}
@@ -83,7 +83,7 @@ RQ1 asks whether the temporal model is good enough to support downstream policy 
 \paragraph*{Discrimination.}
 Under the enrollment-level stratified temporal split, row-level weekly hazard discrimination is
 \begin{equation*}
-AUC_{train}=0.8358, \qquad AUC_{test}=0.8396.
+AUC_{train}=0.8350, \qquad AUC_{test}=0.8405.
 \end{equation*}
 The small train--test gap indicates that performance remains stable under temporal holdout rather than collapsing out of sample. This supports the use of the fitted hazard model as the backbone for subsequent simulated-regime analysis.
 
@@ -92,7 +92,7 @@ Figure~\ref{fig:calibration_main} provides the primary calibration evidence for 
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_calibration_reliability_test.png}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_calibration_reliability_test.png}
 \caption{Primary calibration evidence for weekly hazard on test rows. The figure supports the RQ1 claim only if reliability remains acceptable over operationally relevant risk bins.}
 \label{fig:calibration_main}
 \end{figure}
@@ -115,11 +115,11 @@ Bin 10 & [0.667, 0.733) & 3 & 3 & 0 \\
 \end{table}
 
 \paragraph*{When to act: temporal decision window.}
-Figure~\ref{fig:survival_baseline_rq1} connects predictive quality to decision timing. It places the baseline and policy trajectories on a common weekly axis with $T_{policy}=18$ and $T_{eval}=37$ marked. For RQ1, the baseline trajectory is the key object: periods of steeper decline define the weeks in which temporal monitoring is most decision-relevant.
+Figure~\ref{fig:survival_baseline_rq1} connects predictive quality to decision timing. It places the baseline and policy trajectories on a common weekly axis with $T_{policy}=18$, $T_{eval\_metrics}=37$, and raw-support tail at $T_{eval\_policy}=38$. For RQ1, the baseline trajectory is the key object: periods of steeper decline define the weeks in which temporal monitoring is most decision-relevant.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_policy_survival_by_week_baseline_shock_mech.png}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_policy_survival_by_week_baseline_shock_mech.png}
 \caption{Mean survival trajectories by week. For RQ1, the baseline curve is the key object: steeper decline windows indicate periods where temporal monitoring is most decision-relevant.}
 \label{fig:survival_baseline_rq1}
 \end{figure}
@@ -134,7 +134,7 @@ Before reading the RQ2 and RQ3 contrasts, the validity of the reporting horizons
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_censoring_survival_G_test.png}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_censoring_survival_G_test.png}
 \caption{Censoring survival $G(t)$ used to define stable reporting horizons. The reading rule is operational: IPCW metrics are interpreted only where $G(t) \ge g_{min}=0.05$.}
 \label{fig:censoring_survival_results}
 \end{figure}
@@ -148,7 +148,8 @@ Before reading the RQ2 and RQ3 contrasts, the validity of the reporting horizons
 Quantity & Value \\
 \hline
 $T_{policy}$ & 18 \\
-$T_{eval}$ (stable IPCW horizon) & 37 \\
+$T_{eval\_metrics}$ (stable IPCW horizon) & 37 \\
+$T_{eval\_policy}$ (raw support horizon) & 38 \\
 $G(18)$ & 0.7958 \\
 $G(37)$ & 0.0601 \\
 $G(38)$ & $\approx 10^{-12}$ (unstable) \\
@@ -156,7 +157,7 @@ $G(38)$ & $\approx 10^{-12}$ (unstable) \\
 \end{tabular}
 \end{table}
 
-This rule is not cosmetic. It is part of the evidence contract of the section: weighted metrics and contrast summaries are interpreted only at horizons with acceptable censoring support. The distinction between $T_{policy}$ and $T_{eval}$ therefore determines where substantive claims are allowed to be made.
+This rule is not cosmetic. It is part of the evidence contract of the section: weighted metrics and contrast summaries are interpreted only at horizons with acceptable censoring support. The distinction between $T_{policy}$, $T_{eval\_metrics}$, and $T_{eval\_policy}$ therefore determines where substantive claims are allowed to be made.
 
 \subsection{RQ2: Policy Simulation and Structural Regime Contrast}
 \label{subsec:rq2_results}
@@ -174,47 +175,45 @@ Positive $\Delta S(t)$ means higher survival under the policy regime than under 
 \paragraph*{Figure-level evidence for RQ2.}
 Figure~\ref{fig:deltas_rq2} is the primary figure for RQ2. It should be read in two steps:
 first, the sign over time (is the contrast above zero?);
-second, the horizon-specific magnitude (what is $\Delta S$ at $T_{policy}$ and $T_{eval}$?).
+second, the horizon-specific magnitude by scenario (what is $\Delta S$ at $T_{policy}$ and $T_{eval\_policy}$?).
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_policy_deltaS_by_week_shock_vs_mech.png}
-\caption{Policy contrast $\Delta S(t)$ for shock vs.\ mechanism-aware regimes. The central readout is the sign and magnitude at fixed horizons, not visual smoothness alone.}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_policy_deltaS_by_week_shock_scenarios.png}
+\caption{Policy contrast $\Delta S(t)$ under a fixed trigger with scenario-indexed shock intensity ($\delta\in\{0.08,0.20,0.60\}$) and the shared mechanism-aware curve. The central readout is sign and horizon-specific magnitude by scenario.}
 \label{fig:deltas_rq2}
 \end{figure}
 
 \begin{table}[!t]
 \centering
-\caption{RQ2 summary at $T_{policy}=18$ under fixed policy parameters.}
+\caption{RQ2 summary by shock-intensity scenario at $T_{policy}=18$ and $T_{eval\_policy}=38$.}
 \label{tab:rq2_summary}
-\begin{tabular}{lc}
+\small
+\begin{tabular}{lcccc}
 \hline
-Quantity & Value \\
+Scenario & $\delta_{shock}$ & $\Delta S_{shock}(18)$ & $\Delta S_{shock}(38)$ & $\Delta S_{mech}(18)$ \\
 \hline
-$r^*$ & 1 \\
-$W$ & 2 \\
-$\delta_{shock}$ & 0.2000 \\
-$\bar S^{(0)}(18)$ & 0.8475 \\
-$\bar S^{(1,shock)}(18)$ & 0.8750 \\
-$\Delta S_{shock}(18)$ & 0.0274 \\
-$\bar S^{(1,mech)}(18)$ & 0.8476 \\
-$\Delta S_{mech}(18)$ & 0.000065 \\
+Anchored conservative & 0.08 & 0.0102 & 0.0096 & -0.0006 \\
+Hypothetical A (reference) & 0.20 & 0.0260 & 0.0243 & -0.0006 \\
+Hypothetical B (stress test) & 0.60 & 0.0819 & 0.0760 & -0.0006 \\
 \hline
 \end{tabular}
 \end{table}
+
+The shared mechanism-aware contrast is $\Delta S_{mech}(38)=-0.0062$ at $T_{eval\_policy}$, indicating that under the current schedule and propagated covariate channel, the mechanism-aware regime does not generate a positive survival gain in this run.
 
 \paragraph*{Mechanism diagnostic.}
 To explain why the shock and mechanism-aware regimes differ so sharply, Figure~\ref{fig:policy_mechanism_deltas} should be read as a transmission diagnostic. It shows whether policy-induced covariate deltas are large enough, and persistent enough, to alter downstream hazard meaningfully.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_policy_covariate_deltas_by_week.png}
-\caption{Mechanism diagnostic for policy propagation. Small or short-lived covariate deltas imply limited downstream hazard movement, which is consistent with the near-zero mechanism-aware $\Delta S(18)$.}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_policy_covariate_deltas_by_week.png}
+\caption{Mechanism diagnostic for policy propagation. Small or short-lived covariate deltas imply limited downstream hazard movement, consistent with the weak/negative mechanism-aware contrasts at fixed horizons in this run.}
 \label{fig:policy_mechanism_deltas}
 \end{figure}
 
 \paragraph*{RQ2 conclusion.}
-The framework answers RQ2 positively in structural terms: it can compare explicit regimes on a common temporal backbone and produce interpretable survival contrasts at fixed horizons. In the present configuration, however, the contrast is highly regime-dependent: the shock scenario produces a materially larger gain than the mechanism-aware scenario.
+The framework answers RQ2 positively in structural terms: it can compare explicit regimes on a common temporal backbone and produce interpretable survival contrasts at fixed horizons. In the present configuration, the contrast is highly scenario-dependent in the shock branch (larger gains for larger $\delta$), while the mechanism-aware branch remains weak to negative under the current shared schedule.
 
 \subsection{Benchmark and Robustness Evidence}
 \label{subsec:benchmark_robust_results}
@@ -226,7 +225,7 @@ Figure~\ref{fig:benchmark_dual_panel} summarizes the primary model against bench
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_benchmark_dual_panel_auc.png}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_benchmark_dual_panel_auc.png}
 \caption{Benchmark comparison across model families. Use this figure to verify whether the central directional conclusion is stable across the primary model, the Cox benchmark, and the non-temporal baseline.}
 \label{fig:benchmark_dual_panel}
 \end{figure}
@@ -234,7 +233,7 @@ Figure~\ref{fig:benchmark_dual_panel} summarizes the primary model against bench
 \paragraph*{Ablation evidence.}
 \begin{table}[!t]
 \centering
-\caption{Ablation at $T_{eval}=37$ (re-trained variants).}
+\caption{Ablation at $T_{eval\_metrics}=37$ (re-trained variants).}
 \label{tab:ablation_results}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
@@ -254,16 +253,16 @@ Removing Recency/Streak causes the largest AUC drop, which is consistent with th
 \paragraph*{Endpoint sensitivity.}
 \begin{table}[!t]
 \centering
-\caption{Endpoint sensitivity at $T_{eval}=37$.}
+\caption{Endpoint sensitivity at $T_{eval\_metrics}=37$.}
 \label{tab:endpoint_sensitivity_results}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcc}
 \hline
 Metric & Primary (Withdrawn) & Composite (Fail OR Withdrawn) \\
 \hline
-C-index$_{discrete}(T_{eval})$ & 0.4977 & 0.4965 \\
-IPCW Brier($T_{eval}$) & 0.8621 & 1.0730 \\
-IPCW IBS($0..T_{eval}$) & 0.2418 & 0.3256 \\
+C-index$_{discrete}(T_{eval\_metrics})$ & 0.4965 & 0.4965 \\
+IPCW Brier($T_{eval\_metrics}$) & 0.8542 & 1.0799 \\
+IPCW IBS($0..T_{eval\_metrics}$) & 0.2429 & 0.3291 \\
 $N_{events}$ & 2{,}216 & 4{,}308 \\
 \hline
 \end{tabular}%
@@ -311,21 +310,21 @@ The fairness interpretation pipeline is summarized in Figure~\ref{fig:fairness_p
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_fairness_pipeline.png}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_fairness_pipeline.png}
 \caption{Fairness/subgroup pipeline used in RQ3. It links groupwise survival aggregation, change-in-gap computation, and bootstrap uncertainty for a selected policy scenario under the shared trigger contract.}
 \label{fig:fairness_pipeline_graph}
 \end{figure}
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_rq3_gap_Tpolicy.png}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_rq3_gap_Tpolicy.png}
 \caption{RQ3 gap result at $T_{policy}=18$. Interpretation requires combining sign, magnitude, and confidence-interval support.}
 \label{fig:rq3_gap_tpolicy}
 \end{figure}
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/fig_rq3_gap_Teval.png}
+\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_rq3_gap_Teval.png}
 \caption{RQ3 gap result at $T_{eval\_metrics}=37$. Consistency with $T_{policy}$ is part of the robustness readout.}
 \label{fig:rq3_gap_teval}
 \end{figure}
@@ -339,7 +338,7 @@ The fairness interpretation pipeline is summarized in Figure~\ref{fig:fairness_p
 Horizon & $\Delta Gap(T)$ & 95\% bootstrap CI \\
 \hline
 $T_{policy}=18$ & $-0.00050816$ & $(-0.00066222,\,-0.00032944)$ \\
-$T_{eval}=37$ & $-0.00056691$ & $(-0.00071529,\,-0.00040728)$ \\
+$T_{eval\_metrics}=37$ & $-0.00056691$ & $(-0.00071529,\,-0.00040728)$ \\
 \hline
 \end{tabular}
 \end{table}

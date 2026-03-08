@@ -210,13 +210,13 @@ $AUC_{row}$ &
   Full test support \\
 IPCW Brier$(T)$ &
   Calibration at horizon $T$ &
-  $T_{policy}$, $T_{eval}$ \\
+  $T_{policy}$, $T_{eval\_metrics}$ \\
 IBS$(0{:}T)$ &
   Integrated calibration up to $T$ &
-  $T_{policy}$, $T_{eval}$ \\
+  $T_{policy}$, $T_{eval\_metrics}$ \\
 C-index$_{discrete}(T)$ &
   Ranking of event-time pairs &
-  $T_{policy}$, $T_{eval}$ \\
+  $T_{policy}$, $T_{eval\_metrics}$ \\
 ECE (15 bins) &
   Binned calibration error &
   Full test support \\
@@ -363,7 +363,7 @@ Each variant is retrained with
 \texttt{LogisticRegression} with \texttt{solver="liblinear"},
 \texttt{max\_iter=2000}, \texttt{class\_weight="balanced"}, and
 \texttt{random\_state=42}
-plus the same Platt calibration protocol. The leakage guard excludes all outcome and post-outcome fields. Metrics reported are $AUC_{row,test}$, $C\text{-index}_{discrete}(T_{eval})$, $BS_{IPCW}(T_{eval})$, and $IBS(0{:}T_{eval})$. This axis tests how dependent the main conclusions are on the core temporal engagement features.
+plus the same Platt calibration protocol. The leakage guard excludes all outcome and post-outcome fields. Metrics reported are $AUC_{row,test}$, $C\text{-index}_{discrete}(T_{eval\_metrics})$, $BS_{IPCW}(T_{eval\_metrics})$, and $IBS(0{:}T_{eval\_metrics})$. This axis tests how dependent the main conclusions are on the core temporal engagement features.
 
 \paragraph*{Out-of-domain generalization (leave-one-run-out).}
 One entire course run $(\texttt{code\_module},\texttt{code\_presentation})$ is held out from training and used as the sole test set. The model is retrained on the remaining runs and evaluated via $AUC_{row}$ on the held-out person-period rows. Five held-out runs are reported to expose course-run heterogeneity and assess how far the main hazard model generalizes beyond pooled training conditions.
@@ -448,7 +448,7 @@ Algorithm~\ref{alg:pipeline} summarizes the end-to-end executable pipeline from 
 \State \hspace{6pt} \textit{Mechanism-aware:} overwrite covariates in the active window (primarily click-based engagement), propagate statefully, and recompute $\hat h^{(1,mech)}_{it}=f(X^{cf}_{it})$.
 \State Compute $\hat S^{(1)}_i(t)$ for each regime and scenario; report $\Delta S(T_{policy})$ and $\Delta S(T_{eval\_policy})$ by scenario.
 \State Report diagnostics: $AUC_{row}$, $BS_{IPCW}$, and IBS at both horizons.
-\State Perform subgroup validation (RQ3): compute $\bar\mu^{(a)}_g(t)$, $Gap^{(a)}(t)$, and $\Delta Gap(t)$ at $T_{policy}=18$ and $T_{eval}=37$.
+\State Perform subgroup validation (RQ3): compute $\bar\mu^{(a)}_g(t)$, $Gap^{(a)}(t)$, and $\Delta Gap(t)$ at $T_{policy}=18$ and $T_{eval\_metrics}=37$.
 \State \hspace{6pt} Summarize subgroup uncertainty using $B=500$ bootstrap confidence intervals.
 \end{algorithmic}
 \end{algorithm}

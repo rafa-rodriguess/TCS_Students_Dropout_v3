@@ -21,11 +21,19 @@ artifact provenance during export (path and metadata in notebook outputs),
 plus key protocol decisions such as split settings,
 random seeds, and scenario parameters.
 In particular, the reported policy and horizon settings are explicitly tracked,
-including $r^*=1$, $W=2$, $\delta_{\mathrm{shock}}=0.2$,
-the mechanism-aware schedule (week-0 uplift $0.35$, week-1 uplift $0.10$),
+including $r^*=1$, weekly checking frequency, $W=2$,
+a scenario-indexed shock catalog ($\delta_{\mathrm{shock}}\in\{0.08,0.20,0.60\}$ with anchored and hypothetical statuses),
+the shared mechanism-aware schedule (week-0 uplift $0.35$, week-1 uplift $0.10$),
+the reference scenario identifier used for legacy-compatible outputs,
 and the dual-horizon evaluation rule
 ($T_{policy}=18$, $T_{eval\_metrics}=37$, with
 $T_{eval\_policy}=38$ as raw support horizon).
+
+The scenario contract and its traceability fields are exported in
+\texttt{table\_policy\_scenarios\_main.csv},
+\texttt{table\_policy\_scenario\_params.csv},
+\texttt{table\_policy\_deltaS\_by\_week\_by\_scenario.csv}, and
+\texttt{table\_policy\_deltaS\_at\_horizons\_by\_scenario.csv}.
 
 Reproducibility should be interpreted at the level of the
 specified pipeline contract: same raw inputs + same protocol settings + same
