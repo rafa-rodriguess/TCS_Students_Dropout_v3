@@ -1,8 +1,7 @@
 \section{Appendix B: Reproducibility and Code Availability}
 \label{app:b}
 
-All experiments reported in this paper were executed through a scripted,
-traceable pipeline centered on the project notebook
+All experiments reported in this paper were executed through the project notebook
 \texttt{TCM-Student-Dropout\_updated.ipynb} and its exported artifact workflow.
 The complete source code and the notebook used to reproduce preprocessing,
 temporal split construction, model training/calibration,
@@ -13,12 +12,11 @@ policy simulation, subgroup diagnostics, and artifact export are available at
 The repository includes instructions to regenerate the exported artifacts
 from raw OULAD inputs, including the full \texttt{outputs\_v2} package.
 This package contains both \texttt{outputs\_v2/figures} and
-\texttt{outputs\_v2/tables}, and all figures/tables referenced in the paper
+\texttt{outputs\_v2/tables}, and all figures and tables referenced in the paper
 correspond to files produced by this export process.
 
-To support auditing and exact replication, the pipeline records
-artifact provenance during export (path and metadata in notebook outputs),
-plus key protocol decisions such as split settings,
+The pipeline records artifact provenance during export,
+along with key protocol decisions such as split settings,
 random seeds, and scenario parameters.
 In particular, the reported policy and horizon settings are explicitly tracked,
 including $r^*=1$, weekly checking frequency, $W=2$,
@@ -35,9 +33,7 @@ The scenario contract and its traceability fields are exported in
 \texttt{table\_policy\_deltaS\_by\_week\_by\_scenario.csv}, and
 \texttt{table\_policy\_deltaS\_at\_horizons\_by\_scenario.csv}.
 
-Reproducibility should be interpreted at the level of the
-specified pipeline contract: same raw inputs + same protocol settings + same
-export workflow produce the auditable evidence package used in this manuscript.
+Reproducibility is defined at the level of the specified pipeline: the same raw inputs, protocol settings, and export workflow produce the evidence package used in this manuscript.
 
 \section*{AI Disclosure}
 Generative AI tools were used for language assistance (translation and wording

@@ -1,6 +1,6 @@
 \section{Methodology}
 
-This section defines the implemented methodological framework used to transform temporally indexed enrollment data into policy-relevant evidence. It formalizes the analytical pipeline from person-period data construction and leakage-aware hazard modeling to simulated regime comparison and subgroup diagnostics, while also making explicit the inferential limits of the framework. By the end of the section, the reader should expect a formal description of the method actually implemented, the core estimands used in the analysis, and the interpretive contract under which the reported contrasts are to be read.
+The framework maps temporally indexed enrollment data to weekly hazard estimates, simulated regime contrasts, and subgroup diagnostics. It combines person-period construction, leakage-aware hazard modeling, policy simulation, and subgroup analysis under explicit inferential limits.
 
 \subsection{Motivation, Contributions, and Research Questions}
 
@@ -8,7 +8,7 @@ This section defines the implemented methodological framework used to transform 
 Static risk models primarily answer \textit{who} is at risk, but they do not by themselves determine \textit{when to act} under an auditable operational rule \cite{Prenkaj2021SurveyMLDropout,AndradeGiron2023DropoutMLReview}. In observational settings, the comparison of intervention scenarios must therefore be framed as a structural, model-implied exercise rather than as a causally identified effect estimate \cite{Connolly2018TrialsEvidenceBased,Gallagher2020ChallengeBased,Sidiropoulos2022AgencySustainability}. This study is motivated by that gap: the need for a temporally explicit framework that links weekly risk estimation to executable policy simulation and subgroup-sensitive interpretation.
 
 \paragraph*{Contributions.}
-The methodology makes four concrete contributions. First, it formalizes a discrete-time hazard pipeline for estimating survival trajectories from temporally indexed student records. Second, it introduces a policy simulation layer that compares \textit{shock} and \textit{stateful mechanism-aware} regimes under a common intervention rule. Third, it adds a subgroup fairness layer to quantify how the same policy changes outcome gaps across observable groups. Fourth, it provides an executable and auditable protocol grounded in the notebook implementation and exported artifacts.
+The framework has four components. First, it formalizes a discrete-time hazard pipeline for estimating survival trajectories from temporally indexed student records. Second, it introduces a policy simulation layer that compares \textit{shock} and \textit{stateful mechanism-aware} regimes under a common intervention rule. Third, it adds a subgroup fairness layer to quantify how the same policy changes outcome gaps across observable groups. Fourth, it specifies an executable protocol grounded in the notebook implementation and exported artifacts.
 
 \paragraph*{Research Questions.}
 RQ1 asks whether the temporal model produces weekly hazard estimates that are sufficiently discriminative and calibrated to support decision-making. RQ2 asks what structural survival contrast emerges between simulated regimes under an explicit policy rule. RQ3 asks whether the same policy changes subgroup gaps, and with what uncertainty.
@@ -34,9 +34,9 @@ When the same policy is applied to observable groups,
 quantifies the differential change in trajectories under the same simulation engine.
 \end{proposition}
 
-\subsection{Compact Notation and Evaluation Horizons}
+\subsection{Notation and Evaluation Horizons}
 
-To maintain consistency throughout the section, we use the notation summarized in Table~\ref{tab:method_notation}. These symbols are fixed across the methodological tracks and are reused in the definitions of the main estimands.
+Table~\ref{tab:method_notation} summarizes the notation used throughout the methodological tracks.
 
 \begin{table}[!t]
 \centering
@@ -71,18 +71,16 @@ The protocol distinguishes between substantive and technical horizons:
 \begin{equation*}
 T_{eval\_metrics}=\max\{t:\hat G(t)\ge g_{min}\},
 \end{equation*}
-where $T_{policy}$ denotes the main reporting horizon and $T_{eval\_policy}$ denotes the temporal support over which simulated regime trajectories are evaluated. This separation is important because policy interpretation and censoring-weighted metric stability do not necessarily operate on the same effective horizon.
+where $T_{policy}$ denotes the main reporting horizon and $T_{eval\_policy}$ denotes the temporal support over which simulated regime trajectories are evaluated. Policy interpretation and censoring-weighted metric stability do not necessarily operate on the same horizon.
 
 In the current exported protocol, these horizons are fixed as $T_{policy}=18$, $T_{eval\_policy}=38$, and $T_{eval\_metrics}=37$, with $g_{min}=0.05$ recorded as the operational stability threshold in the evidence package.
 
-\subsection{Methodological Scope and Organization by Tracks}
+\subsection{Analytical Tracks}
 
-The methodological scope of this section is the bridge
+The framework spans the bridge
 \texttt{temporal hazard $\rightarrow$ survival trajectories $\rightarrow$}
 \texttt{policy simulation $\rightarrow$ subgroup diagnostics}.
-Accordingly, the section is organized into executable tracks that correspond to implemented components of the notebook pipeline and its exported artifacts.
-
-The main tracks are:
+The implemented tracks are:
 \begin{enumerate}
 \item temporal pipeline and data construction;
 \item leakage prevention and temporal splitting;
@@ -93,7 +91,7 @@ The main tracks are:
 \item subgroup fairness diagnostics (RQ3).
 \end{enumerate}
 
-This organization also clarifies what is outside the scope of the section. The section does not claim causal identification, nor does it attempt to estimate intervention effects from randomized exposure. Instead, it defines the implemented modeling and simulation framework under which later empirical contrasts are generated and interpreted.
+The framework does not identify causal effects from observational exposure. It defines the modeling and simulation machinery under which later contrasts are generated and interpreted.
 
 \subsection{Problem Setup and Unit of Analysis}
 
@@ -126,7 +124,7 @@ t_i^{last\_obs}, & E_i=0.
 \end{cases}
 \end{equation*}
 
-This endpoint definition ensures that an observed event is only counted when its time is known and compatible with the weekly survival setup. It also preserves a clear distinction between event occurrence and incomplete administrative timing information.
+Events are counted only when administrative timing is observed and compatible with the weekly survival setup.
 
 \subsection{Person-Period Construction and Terminal Label}
 
@@ -139,7 +137,7 @@ event_{it}=\mathbb{1}\{E_i=1 \land t=t_i^{final}\}
 \sum_{t=0}^{t_i^{final}} event_{it} \le 1.
 \end{equation*}
 
-This construction aligns the data structure with discrete-time hazard estimation. In particular, it guarantees that each enrollment contributes a longitudinal risk set and, if applicable, a single terminal event week.
+This construction yields a longitudinal risk set for each enrollment and, if applicable, a single terminal event week.
 
 \subsection{Temporal Covariate Engineering}
 
@@ -166,7 +164,7 @@ Streak_{i,t-1}+1, & A_{it}=1, \\
 \end{cases}
 \end{equation*}
 
-The main feature set includes \texttt{total\_clicks}, \texttt{recency}, \texttt{streak}, \texttt{submitted\_this\_week}, and contextual covariates. These features are designed to encode short-term engagement dynamics while preserving temporal ordering, which is essential for both hazard prediction and policy triggering.
+The main feature set includes \texttt{total\_clicks}, \texttt{recency}, \texttt{streak}, \texttt{submitted\_this\_week}, and contextual covariates. These features encode short-term engagement dynamics while preserving temporal ordering.
 
 \subsection{Stratified Temporal Split and Leakage Prevention}
 
@@ -184,7 +182,7 @@ stratum_i=(E_i,\ bucket_q(time\_for\_split_i)).
 
 The implemented configuration uses $q=4$ and \texttt{test\_size}=0.30. Calibration and validation procedures further use enrollment-grouped folds via GroupKFold.
 
-This design serves two purposes. First, it prevents leakage across rows belonging to the same enrollment. Second, it preserves a controlled temporal composition across train and test partitions, which is especially important in event-time modeling. The grouped validation logic is motivated by the broader concern with leakage in structured machine-learning evaluation and by cross-validation strategies for dependent data \cite{KapoorNarayanan2023LeakagePatterns,RobertsEtAl2017CrossValidationEcography}.
+The design prevents leakage across rows belonging to the same enrollment and preserves temporal composition across train and test partitions. The grouped validation logic follows the broader concern with leakage in structured machine-learning evaluation and cross-validation for dependent data \cite{KapoorNarayanan2023LeakagePatterns,RobertsEtAl2017CrossValidationEcography}.
 
 \subsection{Primary Discrete-Time Hazard Model (RQ1)}
 
@@ -193,7 +191,6 @@ Following standard discrete-time event-history formulations \cite{SingerWillett1
 \label{eq:hazard_weekly}
 h_{it}=P(event_{it}=1 \mid T_i\ge t, X_{it})
 \end{equation}
-In Equation~\ref{eq:hazard_weekly}, $h_{it}$ denotes the weekly instantaneous event risk conditional on remaining under observation up to week $t$.
 
 \begin{equation*}
 \text{logit}(\hat h_{it})=\beta_0+\beta^\top X_{it}
@@ -205,9 +202,8 @@ In implementation, the raw weekly probabilities are post-hoc calibrated through 
 \label{eq:survival_product}
 \hat S_i(t)=\prod_{k\le t}(1-\hat h_{ik})
 \end{equation}
-In Equation~\ref{eq:survival_product}, cumulative survival is obtained as the product of the predicted non-event probabilities up to horizon $t$.
 
-The primary track therefore converts weekly feature histories into interpretable risk trajectories rather than a single end-of-course classification score. This is the central modeling layer supporting RQ1 and providing the backbone for downstream policy simulation.
+The primary track yields weekly risk trajectories rather than a single end-of-course classification score. This layer underlies RQ1 and the downstream policy simulation.
 
 \subsection{Censoring Track and IPCW}
 
@@ -220,7 +216,7 @@ The censoring component combines estimation of censoring survival with truncated
 w_{it}=\frac{1}{\max(\hat G_{it}, g_{min})}.
 \end{equation*}
 
-This weighting logic follows standard survival-prediction evaluation under right censoring \cite{Graf1999AssessmentSurvivalPrediction,Gerds2006ConsistentBrier}. The protocol separates the policy reporting horizon from the technical horizon used for censoring-weighted metrics. This distinction is necessary because IPCW-based evaluation can become unstable when $\hat G(t)$ becomes too small, even if simulated regime trajectories remain computable beyond that point. In the current protocol, $g_{min}=0.05$ defines the last admissible support region for weighted metric reporting and yields $T_{eval\_metrics}=37$, while $T_{eval\_policy}=38$ is retained only as the raw support horizon for trajectory reporting.
+This weighting logic follows standard survival-prediction evaluation under right censoring \cite{Graf1999AssessmentSurvivalPrediction,Gerds2006ConsistentBrier}. The protocol separates the policy reporting horizon from the technical horizon used for censoring-weighted metrics because IPCW evaluation becomes unstable when $\hat G(t)$ is too small, even if simulated regime trajectories remain computable beyond that point. In the current protocol, $g_{min}=0.05$ yields $T_{eval\_metrics}=37$, while $T_{eval\_policy}=38$ is retained only as the raw support horizon for trajectory reporting.
 
 \subsection{Policy Simulation (RQ2): Shock vs. Mechanism-Aware}
 
@@ -250,7 +246,7 @@ Under the \textit{mechanism-aware} regime, the policy propagates through counter
 \hat h^{(1,mech)}_{it}=f(X^{cf}_{it}).
 \end{equation*}
 
-In the mechanism-aware regime, $X^{cf}_{it}$ is updated statefully across weeks. In the exported run, the strongest perturbation channel is click-based engagement (\texttt{total\_clicks}), used as an LMS proxy analogous to participation and re-engagement dynamics discussed by Kay and Bostock \cite{KayBostock2023PowerNudge}, rather than as a literal replication of the source study variables. This distinction is substantive: the shock regime applies an immediate model-level perturbation, whereas the mechanism-aware regime changes the evolving covariate path through which future hazards are generated.
+In the mechanism-aware regime, $X^{cf}_{it}$ is updated statefully across weeks. In the exported run, the strongest perturbation channel is click-based engagement (\texttt{total\_clicks}), used as an LMS proxy analogous to participation and re-engagement dynamics discussed by Kay and Bostock \cite{KayBostock2023PowerNudge}, rather than as a literal replication of the source study variables. The shock regime applies an immediate model-level perturbation, whereas the mechanism-aware regime changes the evolving covariate path through which future hazards are generated.
 
 \subsection{Structural Survival Contrast (RQ2)}
 
@@ -263,7 +259,7 @@ The central policy estimand is mean survival under each regime:
 \label{eq:delta_s}
 \Delta S(t)=\bar S^{(1)}(t)-\bar S^{(0)}(t).
 \end{equation}
-In Equation~\ref{eq:delta_s}, positive values indicate a survival gain under the policy regime relative to baseline.
+Positive values indicate a survival gain under the policy regime relative to baseline.
 
 The interpretation of $\Delta S(t)$ is that of a \textit{simulated regime contrast} implied by the fitted model and the policy contract. It is not interpreted as a causally identified treatment effect.
 
@@ -282,19 +278,15 @@ Gap^{(a)}(t)=\bar\mu_1^{(a)}(t)-\bar\mu_0^{(a)}(t)
 \label{eq:delta_gap}
 \Delta Gap(t)=Gap^{(1)}(t)-Gap^{(0)}(t).
 \end{equation}
-In Equation~\ref{eq:delta_gap}, the sign of $\Delta Gap(t)$ indicates whether the policy enlarges or reduces the between-group difference at the horizon of interest.
-
-Uncertainty for this track is estimated via bootstrap. This allows subgroup comparisons to be reported with interval-based evidence rather than point estimates alone, which is important given the additional variability introduced by subgroup partitioning.
+The sign of $\Delta Gap(t)$ indicates whether the policy enlarges or reduces the between-group difference at the horizon of interest. Uncertainty is estimated via bootstrap.
 
 \subsection{Benchmark Track}
 
-The benchmark track compares model families without replacing the primary hazard pipeline. Its role is to provide a reference point for model-family comparison and robustness assessment, rather than to redefine the main decision engine used for policy simulation.
-
-This track includes a Cox baseline with time-varying covariates \cite{Cox1972RegressionModels}. The benchmark therefore functions as a comparative methodological anchor: it helps contextualize the discrete-time hazard model while preserving the latter as the principal framework for RQ1--RQ3.
+The benchmark track provides model-family reference comparisons without replacing the primary hazard pipeline. It includes a Cox baseline with time-varying covariates \cite{Cox1972RegressionModels} and contextualizes the discrete-time hazard model while preserving it as the principal framework for RQ1--RQ3.
 
 \subsection{Operational Assumptions}
 
-The interpretation of this section depends on the following assumptions:
+Interpretation rests on the following assumptions:
 \begin{itemize}
 \item the event and censoring definitions correctly represent the observational endpoint;
 \item covariates used at week $t$ are available up to week $t$ only, with no temporal leakage;
@@ -302,16 +294,9 @@ The interpretation of this section depends on the following assumptions:
 \item the stability of censoring-weighted metrics is evaluated at the technical horizon $T_{eval\_metrics}$.
 \end{itemize}
 
-These assumptions define the methodological contract under which the framework is valid. They are not ancillary remarks; they delimit the intended use of the estimates and the scope of defensible interpretation.
+\subsection{Interpretive Scope}
 
-\subsection{Scope of Interpretation}
-
-The interpretive contract of this section is the following:
-\begin{quote}
 The reported results for $\Delta S$ and $\Delta Gap$ are \textit{model-implied simulated regime contrasts}, not causally identified estimates of intervention effects.
-\end{quote}
-
-Accordingly, the reader should interpret the methodology as a formal and executable framework for temporally grounded scenario comparison under explicit modeling assumptions. What this section promises is a faithful description of the implemented method, its estimands, and its inferential boundaries; what it does not promise is causal identification from observational exposure.
 
 \subsection{Reproducibility}
 
@@ -319,16 +304,13 @@ Code for preprocessing, temporal splitting, training and calibration, policy sim
 \url{https://github.com/rafa-rodriguess/TCM-Student-Dropout}
 \cite{RafaRepoTCMStudentDropout}. The reference dataset used in the pipeline is OULAD \cite{Kuzilek2017OULAD}.
 
-The reproducibility layer supports the section's traceability claim by linking
-the formal description presented here to the implemented notebook workflow and
-its exported evidence artifacts. The artifact package records the full policy
+The artifact package records the full policy
 contract in \nolinkurl{table_policy_spec.csv}, the scenario catalog in
 \nolinkurl{table_policy_scenarios_main.csv} and
 \nolinkurl{table_policy_scenario_params.csv}, and scenario-resolved trajectory
 outputs in \nolinkurl{table_policy_deltaS_by_week_by_scenario.csv} and
 \nolinkurl{table_policy_deltaS_at_horizons_by_scenario.csv}. It also records
-the dual-horizon semantics in \nolinkurl{table_policy_horizons_dual.csv}.
-Under the current exported protocol, these artifacts jointly encode the
+the dual-horizon semantics in \nolinkurl{table_policy_horizons_dual.csv}. Under the current exported protocol, these artifacts jointly encode the
 anchored trigger reference, the frozen shared mechanism-aware schedule, the
 anchored-vs-hypothetical shock intensity split, and the distinction between
 $T_{\text{policy}}=18$, $T_{\text{eval,policy}}=38$, and
