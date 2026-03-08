@@ -151,6 +151,29 @@ $G(38)$ & $\approx 10^{-12}$ (unstable) \\
 
 Weighted metrics and contrast summaries are interpreted only at horizons with acceptable censoring support. The distinction between $T_{policy}$, $T_{eval\_metrics}$, and $T_{eval\_policy}$ therefore determines where substantive claims are made.
 
+\begin{table*}[!t]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.05}
+\caption{Definitive horizon and sample-size map used in the active manuscript.}
+\label{tab:definitive_horizon_sample_map}
+\begin{tabular}{@{}p{0.22\textwidth} p{0.18\textwidth} p{0.34\textwidth} p{0.18\textwidth}@{}}
+\hline
+Analysis block & Unit reported & Sample size used & Horizon(s) used \\
+\hline
+Cohort construction & Enrollments / person-period rows & Full cohort: $32{,}593$ enrollments, $775{,}295$ person-period rows & Raw cohort support up to week 63 \\
+Temporal split & Enrollments / person-period rows & Train: $22{,}815$ enrollments, $542{,}878$ rows; Test: $9{,}778$ enrollments, $232{,}417$ rows & Train support up to week 63; test support up to week 38 \\
+RQ1 weighted survival metrics & Test enrollments & $9{,}778$ test enrollments, $2{,}216$ test events & $T_{policy}=18$, $T_{eval\_metrics}=37$ \\
+RQ2 policy trajectories & Test enrollments & $9{,}778$ test enrollments & $T_{policy}=18$, $T_{eval\_policy}=38$ \\
+Benchmark horizon AUC & Test enrollments & $9{,}778$ test enrollments & $T_{policy}=18$, $T_{eval\_metrics}=37$ \\
+Row-level temporal diagnostics & Test person-period rows & $232{,}417$ test rows & Weekly row-level discrimination; not a horizon-level summary \\
+RQ3 subgroup diagnostics & Test person-period rows and horizon summaries & Row-level subgroup diagnostics on $232{,}417$ test rows; policy/fairness contrasts on the same test cohort & Row-level diagnostics plus $\Delta Gap(18)$ and $\Delta Gap(37)$ \\
+\hline
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:definitive_horizon_sample_map} fixes the notation used throughout the paper: cohort-level counts, enrollment-level evaluation counts, and person-period row counts are reported separately and are not numerically interchangeable. Likewise, late raw weeks such as 57 or 63 describe sparse tail support in the full cohort or training split, not additional reporting horizons.
+
 \subsection{RQ2: Policy Simulation and Structural Regime Contrast}
 \label{subsec:rq2_results}
 
@@ -223,7 +246,7 @@ Non-temporal RSF & 0.6457 & 0.6388 \\
 }
 \end{table}
 
-A supplementary row-level check between the two temporal variants yields test AUCs of 0.8405 and 0.8395, an absolute difference of approximately 0.0010. The benchmark interpretation in this section is therefore anchored on the horizon-level comparison above.
+A supplementary row-level check between the two temporal variants yields test AUCs of 0.8405 and 0.8395, an absolute difference of approximately 0.0010, but this comparison is computed on $232{,}417$ test person-period rows rather than on the $9{,}778$ test enrollments used in the horizon-level benchmark. The benchmark interpretation in this section is therefore anchored on the horizon-level comparison above.
 
 \paragraph*{Ablation evidence.}
 \begin{table}[!t]

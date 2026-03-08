@@ -107,6 +107,8 @@ Test  &  9{,}778 & 2{,}216 & 232{,}417 \\
 \end{tabular}
 \end{table}
 
+All subsequent evaluation counts in the manuscript refer either to the full deduplicated cohort ($32{,}593$ enrollments), the held-out test cohort ($9{,}778$ enrollments), or the test person-period table ($232{,}417$ weekly rows). These quantities are reported separately because they serve different analytical roles and should not be compared as if they were the same sample size.
+
 \paragraph*{Validation-level leakage control.}
 Calibration and evaluation diagnostics use GroupKFold with $k=5$ folds grouped by the enrollment key. This adds a second layer of leakage control by ensuring that no person-period rows from the same enrollment appear in both calibration and validation within a fold.
 
@@ -180,7 +182,7 @@ T_{eval\_metrics}=\max\{t:\hat G(t)\ge g_{min}\},
 with $g_{min}=0.05$, yielding $T_{eval\_metrics}=37$ and $\hat G(37)=0.060$. Beyond this point, $\hat G(38)\approx 10^{-12}$, making IPCW-based summaries numerically unstable.
 
 \paragraph*{Raw support horizon.}
-$T_{eval\_policy}=38$ denotes the maximum observed test support. It is retained for trajectory visualization only and is explicitly excluded from quantitative IPCW-based reporting.
+$T_{eval\_policy}=38$ denotes the maximum observed test support. It is retained for trajectory visualization only and is explicitly excluded from quantitative IPCW-based reporting. Raw late weeks beyond 38 still appear in the full cohort and in the training split (up to week 63), but these sparse tail observations are not used as additional reporting horizons.
 
 \paragraph*{Censoring model.}
 A conditional discrete-time model is fit on training person-period rows to estimate $\hat G_{it}=P(C_i\ge t \mid X_{it})$. Stabilized IPCW weights are defined as
