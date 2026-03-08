@@ -116,3 +116,45 @@ Para cada horizonte `T`:
 ## Decisao recomendada
 
 Classificar a inconsistencia como "metodologica de comparacao" (nao como "erro matematico do modelo"). Corrigir protocolo de benchmark para like-for-like e atualizar texto/tabelas para refletir esse contrato.
+
+## Adendo de validacao (nova rodada executada em 2026-03-08)
+
+### Resultado da verificacao
+
+As adequacoes like-for-like ainda nao foram efetivamente aplicadas na execucao validada.
+
+### Evidencia em artefatos CSV
+
+1. Arquivos gerados nesta rodada:
+	- `outputs_v2/tables/table_benchmark_horizon_auc.csv`
+	- `outputs_v2/tables/table_benchmark_row_level_auc.csv`
+	- `outputs_v2/tables/table_benchmark_unified.csv`
+
+2. Arquivo principal esperado para comparacao primaria IPCW nao existe:
+	- ausente: `outputs_v2/tables/table_benchmark_horizon_ipcw_primary.csv`
+
+3. Schema observado permanece no formato antigo (v1), sem colunas IPCW de AUC por horizonte:
+	- `AUC_event_by_T_policy`, `AUC_event_by_T_eval_metrics`, `n_test_enrollments`, `source`
+	- sem `AUC_IPCW_event_by_T_policy` e sem `AUC_IPCW_event_by_T_eval_metrics`
+
+4. Rotulo nao-temporal continua como `non_temporal_rsf` nos CSVs exportados.
+
+### Evidencia no notebook
+
+1. Marcadores de execucao e codigo continuam em `P17.6-v1`:
+	- banner de output: `=== P17.6-v1 — Unified Benchmark Pack ... ===`
+	- termino: `=== P17.6-v1 DONE ===`
+
+2. Nao ha marcador `P17.6-v2` nem referencias ao artefato `table_benchmark_horizon_ipcw_primary.csv` no bloco de benchmark executado.
+
+### Conclusao objetiva desta rodada
+
+Status do ipynb frente ao plano de correcao: **NAO corrigido ainda** para o contrato like-for-like.
+
+### Proximo passo tecnico minimo
+
+1. Atualizar o bloco P17.6 para versao com AUC IPCW por horizonte e export do arquivo primario IPCW.
+2. Reexecutar apenas a cadeia minima (P9.1 e P17.6) e revalidar:
+	- existencia de `table_benchmark_horizon_ipcw_primary.csv`
+	- colunas `AUC_IPCW_event_by_T_policy` e `AUC_IPCW_event_by_T_eval_metrics`
+	- rotulo coerente do baseline nao-temporal (`non_temporal_rsf` vs `non_temporal_rf_fallback`).
