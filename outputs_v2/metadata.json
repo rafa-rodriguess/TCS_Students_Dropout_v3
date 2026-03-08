@@ -17,6 +17,55 @@
     "figures/fig_policy_deltaS_by_week_three_scenarios.png",
     "figures/fig_policy_survival_by_week_baseline_shock_mech.png"
   ],
+  "hashes": {
+    "table_survival_metrics_ipcw_vs_base_unified_sha256_short": "75ad52dd6a9f"
+  },
+  "model_provenance": {
+    "hazard_feature_set": {
+      "numeric_features": [
+        "total_clicks",
+        "studied_credits",
+        "num_of_prev_attempts",
+        "recency",
+        "streak",
+        "submitted_this_week"
+      ],
+      "categorical_features": [
+        "week",
+        "code_module",
+        "code_presentation",
+        "highest_education",
+        "age_band",
+        "gender"
+      ],
+      "includes_submitted_this_week": true,
+      "feature_hash_short_sha256": "ab2fa95b2af7551c",
+      "feature_string_for_hash": "NUM:num_of_prev_attempts|recency|streak|studied_credits|submitted_this_week|total_clicks||CAT:age_band|code_module|code_presentation|gender|highest_education|week"
+    },
+    "rq2_sensitivity_grid": {
+      "grid_table_path": "tables/table_rq2_sensitivity_grid.csv",
+      "T_policy": 18,
+      "T_eval": 38,
+      "T_eval_policy": 38,
+      "grid_size": 216,
+      "deltaS_mech_Tpolicy_quantiles": {
+        "q25": 0.0021384789186444,
+        "median": 0.0028799264617344004,
+        "q75": 0.00348298828743315
+      },
+      "top1_by_deltaS_mech_Tpolicy": {
+        "r_star": 2,
+        "W": 3,
+        "decay_type": "flat",
+        "alpha_week0": 0.5,
+        "alpha_week1": 0.15,
+        "deltaS_mech_Tpolicy": 0.0047248581834257,
+        "deltaS_shock_Tpolicy": 0.0084730738331064,
+        "deltaS_mech_Teval": 0.0025537060723536,
+        "deltaS_shock_Teval": 0.0048038672046472
+      }
+    }
+  },
   "policy": {
     "covariate_impact_scope": "click_based_engagement_proxy_in_exported_run",
     "deltaS_tables": {
@@ -50,6 +99,60 @@
       "trigger_frequency": "weekly",
       "trigger_rule": "flag if no LMS engagement in last 7 days (\u2248 recency>=1 week)"
     },
+    "policy_spec": {
+      "trigger": {
+        "r_star": 1,
+        "trigger_anchor_definition": "flag if no LMS engagement in last 7 days (\u2248 recency>=1 week)",
+        "trigger_anchor_study": "Kay & Bostock (2023) \u2014 The Power of the Nudge: Technology Driving Persistence",
+        "recency_definition": "weeks since last active week (activity_flag = 1 if total_clicks>0)",
+        "recency_proxy_col": "total_clicks",
+        "trigger_frequency": "weekly"
+      },
+      "effect_shared": {
+        "W": 2,
+        "alpha_week0": 0.35,
+        "alpha_week1": 0.1,
+        "decay_type": "kb2023_step_2w",
+        "window_exclusive_upper": true
+      },
+      "shock_scenarios": [
+        {
+          "scenario_id": "anchored_conservative",
+          "scenario_label": "Conservative anchored",
+          "delta_shock_ablation": 0.08,
+          "scenario_status": "anchored",
+          "scenario_source": "SneyersDeWitte2018_anchored",
+          "scenario_note": "Conservative anchored intensity"
+        },
+        {
+          "scenario_id": "hypothetical_A",
+          "scenario_label": "Hypothetical A",
+          "delta_shock_ablation": 0.2,
+          "scenario_status": "hypothetical",
+          "scenario_source": "hypothetical_legacy_baseline",
+          "scenario_note": "Legacy notebook baseline, now treated as hypothetical"
+        },
+        {
+          "scenario_id": "hypothetical_B",
+          "scenario_label": "Hypothetical B",
+          "delta_shock_ablation": 0.6,
+          "scenario_status": "hypothetical",
+          "scenario_source": "hypothetical_extreme_stress_test",
+          "scenario_note": "Extreme stress-test intensity"
+        }
+      ],
+      "reference_scenario_id": "hypothetical_A",
+      "effect": {
+        "W": 2,
+        "alpha_week0": 0.35,
+        "alpha_week1": 0.1,
+        "decay_type": "kb2023_step_2w",
+        "window_exclusive_upper": true,
+        "delta_shock_ablation": 0.2
+      },
+      "spec_hash_short_sha256": "55329bcb152e"
+    },
+    "policy_spec_table": "tables/table_policy_spec.csv",
     "reference_scenario_id": "hypothetical_A",
     "scenario_catalog_main_table": "tables/table_policy_scenarios_main.csv",
     "scenario_catalog_table": "tables/table_policy_scenario_params.csv",
@@ -127,61 +230,12 @@
         "hypothetical_A",
         "hypothetical_B"
       ]
-    },
-    "policy_spec": {
-      "trigger": {
-        "r_star": 1,
-        "trigger_anchor_definition": "flag if no LMS engagement in last 7 days (\u2248 recency>=1 week)",
-        "trigger_anchor_study": "Kay & Bostock (2023) \u2014 The Power of the Nudge: Technology Driving Persistence",
-        "recency_definition": "weeks since last active week (activity_flag = 1 if total_clicks>0)",
-        "recency_proxy_col": "total_clicks",
-        "trigger_frequency": "weekly"
-      },
-      "effect_shared": {
-        "W": 2,
-        "alpha_week0": 0.35,
-        "alpha_week1": 0.1,
-        "decay_type": "kb2023_step_2w",
-        "window_exclusive_upper": true
-      },
-      "shock_scenarios": [
-        {
-          "scenario_id": "anchored_conservative",
-          "scenario_label": "Conservative anchored",
-          "delta_shock_ablation": 0.08,
-          "scenario_status": "anchored",
-          "scenario_source": "SneyersDeWitte2018_anchored",
-          "scenario_note": "Conservative anchored intensity"
-        },
-        {
-          "scenario_id": "hypothetical_A",
-          "scenario_label": "Hypothetical A",
-          "delta_shock_ablation": 0.2,
-          "scenario_status": "hypothetical",
-          "scenario_source": "hypothetical_legacy_baseline",
-          "scenario_note": "Legacy notebook baseline, now treated as hypothetical"
-        },
-        {
-          "scenario_id": "hypothetical_B",
-          "scenario_label": "Hypothetical B",
-          "delta_shock_ablation": 0.6,
-          "scenario_status": "hypothetical",
-          "scenario_source": "hypothetical_extreme_stress_test",
-          "scenario_note": "Extreme stress-test intensity"
-        }
-      ],
-      "reference_scenario_id": "hypothetical_A",
-      "effect": {
-        "W": 2,
-        "alpha_week0": 0.35,
-        "alpha_week1": 0.1,
-        "decay_type": "kb2023_step_2w",
-        "window_exclusive_upper": true,
-        "delta_shock_ablation": 0.2
-      },
-      "spec_hash_short_sha256": "55329bcb152e"
-    },
-    "policy_spec_table": "tables/table_policy_spec.csv"
+    }
+  },
+  "registered_artifacts": {
+    "survival_metrics_ipcw": "tables/table_survival_metrics_ipcw.csv",
+    "survival_metrics_ipcw_vs_base": "tables/table_survival_metrics_ipcw_vs_base.csv",
+    "survival_metrics_ipcw_vs_base_unified": "tables/table_survival_metrics_ipcw_vs_base_unified.csv"
   },
   "tables": [
     "tables/table_policy_deltaS_by_week_all.csv",
@@ -200,59 +254,5 @@
     "tables/table_ipcw_report_pack_deltas.csv",
     "tables/table_support_by_week.csv",
     "tables/table_policy_horizons_dual.csv"
-  ],
-  "model_provenance": {
-    "hazard_feature_set": {
-      "numeric_features": [
-        "total_clicks",
-        "studied_credits",
-        "num_of_prev_attempts",
-        "recency",
-        "streak",
-        "submitted_this_week"
-      ],
-      "categorical_features": [
-        "week",
-        "code_module",
-        "code_presentation",
-        "highest_education",
-        "age_band",
-        "gender"
-      ],
-      "includes_submitted_this_week": true,
-      "feature_hash_short_sha256": "ab2fa95b2af7551c",
-      "feature_string_for_hash": "NUM:num_of_prev_attempts|recency|streak|studied_credits|submitted_this_week|total_clicks||CAT:age_band|code_module|code_presentation|gender|highest_education|week"
-    },
-    "rq2_sensitivity_grid": {
-      "grid_table_path": "tables/table_rq2_sensitivity_grid.csv",
-      "T_policy": 18,
-      "T_eval": 38,
-      "T_eval_policy": 38,
-      "grid_size": 216,
-      "deltaS_mech_Tpolicy_quantiles": {
-        "q25": 0.0021384789186444,
-        "median": 0.0028799264617344004,
-        "q75": 0.00348298828743315
-      },
-      "top1_by_deltaS_mech_Tpolicy": {
-        "r_star": 2,
-        "W": 3,
-        "decay_type": "flat",
-        "alpha_week0": 0.5,
-        "alpha_week1": 0.15,
-        "deltaS_mech_Tpolicy": 0.0047248581834257,
-        "deltaS_shock_Tpolicy": 0.0084730738331064,
-        "deltaS_mech_Teval": 0.0025537060723536,
-        "deltaS_shock_Teval": 0.0048038672046472
-      }
-    }
-  },
-  "registered_artifacts": {
-    "survival_metrics_ipcw": "tables/table_survival_metrics_ipcw.csv",
-    "survival_metrics_ipcw_vs_base": "tables/table_survival_metrics_ipcw_vs_base.csv",
-    "survival_metrics_ipcw_vs_base_unified": "tables/table_survival_metrics_ipcw_vs_base_unified.csv"
-  },
-  "hashes": {
-    "table_survival_metrics_ipcw_vs_base_unified_sha256_short": "75ad52dd6a9f"
-  }
+  ]
 }
