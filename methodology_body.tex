@@ -224,16 +224,9 @@ This weighting logic follows standard survival-prediction evaluation under right
 
 \subsection{Policy Simulation (RQ2): Shock vs. Mechanism-Aware}
 
-The current policy contract is anchored to the operational nudge rule discussed by Kay and Bostock \cite{KayBostock2023PowerNudge}. In the exported evidence package, the trigger is recorded as ``flag if no LMS engagement in last 7 days ($\approx \text{recency} \ge 1$ week)'' with weekly checking frequency and current trigger parameter $r^*=1$. This anchor is stored in the full policy specification artifact (\texttt{table\_policy\_spec.csv}) rather than in the compact scenario-parameter table.
+The current policy contract separates external anchoring from internal scenario assumptions. The operational intervention rule is anchored to Kay and Bostock \cite{KayBostock2023PowerNudge}: ``flag if no LMS engagement in last 7 days ($\approx \text{recency} \ge 1$ week)'', with weekly checking frequency and trigger parameter $r^*=1$. This operational anchor is recorded in \texttt{table\_policy\_spec.csv}.
 
-The trigger anchor follows Kay and Bostock \cite{KayBostock2023PowerNudge}, while the numerical effect schedule used here is the frozen scenario specification adopted in the current run. Concretely, the exported protocol records
-parameters $W_{\text{weeks}}=2$, $\alpha_{\text{week0}}=0.35$,
-$\alpha_{\text{week1}}=0.10$, and $\delta_{\text{shock}}=0.20$.
-The corresponding exported artifact fields are
-\nolinkurl{decay_type=kb2023_step_2w},
-\nolinkurl{window_exclusive_upper=True},
-\nolinkurl{W_weeks}, and
-\nolinkurl{delta_shock_ablation}.
+The active window is fixed at $W_{\text{weeks}}=2$, consistent with a short-term digital nudge framing \cite{KayBostock2023PowerNudge}. In contrast, effect intensity is treated as a scenario parameter because the observational setting does not identify a unique causal magnitude. The mechanism-aware shared schedule is frozen as $\alpha_{\text{week0}}=0.35$, $\alpha_{\text{week1}}=0.10$, \nolinkurl{decay_type=kb2023_step_2w}, and \nolinkurl{window_exclusive_upper=True}. For the shock regime, \nolinkurl{delta_shock_ablation} is reported as three scenario intensities: $0.08$ (anchored conservative scenario, qualitatively aligned with moderate intervention effects synthesized by Sneyers and De Witte \cite{SneyersDeWitte2018InterventionsMeta}), $0.20$ (hypothetical A), and $0.60$ (hypothetical B stress test).
 
 The intervention rule is triggered by recency crossing a threshold within an activation window:
 \begin{equation*}
@@ -257,7 +250,7 @@ Under the \textit{mechanism-aware} regime, the policy propagates through counter
 \hat h^{(1,mech)}_{it}=f(X^{cf}_{it}).
 \end{equation*}
 
-In the mechanism-aware regime, $X^{cf}_{it}$ is updated statefully across weeks. This distinction is substantive: the shock regime applies an immediate model-level perturbation, whereas the mechanism-aware regime changes the evolving covariate path through which future hazards are generated.
+In the mechanism-aware regime, $X^{cf}_{it}$ is updated statefully across weeks. In the exported run, the strongest perturbation channel is click-based engagement (\texttt{total\_clicks}), used as an LMS proxy analogous to participation and re-engagement dynamics discussed by Kay and Bostock \cite{KayBostock2023PowerNudge}, rather than as a literal replication of the source study variables. This distinction is substantive: the shock regime applies an immediate model-level perturbation, whereas the mechanism-aware regime changes the evolving covariate path through which future hazards are generated.
 
 \subsection{Structural Survival Contrast (RQ2)}
 
@@ -329,10 +322,14 @@ Code for preprocessing, temporal splitting, training and calibration, policy sim
 The reproducibility layer supports the section's traceability claim by linking
 the formal description presented here to the implemented notebook workflow and
 its exported evidence artifacts. The artifact package records the full policy
-contract in \nolinkurl{table_policy_spec.csv}, the compact effect-parameter
-snapshot in \nolinkurl{table_policy_scenario_params.csv}, and the dual-horizon
-semantics in \nolinkurl{table_policy_horizons_dual.csv}. Under the current
-exported protocol, these artifacts jointly encode the anchored trigger
-reference, the frozen effect parameters, and the distinction between
+contract in \nolinkurl{table_policy_spec.csv}, the scenario catalog in
+\nolinkurl{table_policy_scenarios_main.csv} and
+\nolinkurl{table_policy_scenario_params.csv}, and scenario-resolved trajectory
+outputs in \nolinkurl{table_policy_deltaS_by_week_by_scenario.csv} and
+\nolinkurl{table_policy_deltaS_at_horizons_by_scenario.csv}. It also records
+the dual-horizon semantics in \nolinkurl{table_policy_horizons_dual.csv}.
+Under the current exported protocol, these artifacts jointly encode the
+anchored trigger reference, the frozen shared mechanism-aware schedule, the
+anchored-vs-hypothetical shock intensity split, and the distinction between
 $T_{\text{policy}}=18$, $T_{\text{eval,policy}}=38$, and
 $T_{\text{eval,metrics}}=37$.

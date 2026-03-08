@@ -251,26 +251,45 @@ IBS summarizes calibration quality over an interval rather than at a single hori
 The policy track compares two simulated regime constructions under the same deterministic trigger. This keeps the intervention rule fixed while isolating differences in how the regime is propagated through the model.
 
 \paragraph*{Scenario specification.}
-Table~\ref{tab:policy_spec} records the fixed policy parameters. The Recency trigger fires when an enrollment reaches $r^*$ consecutive weeks without LMS engagement; the active window spans $W$ weeks with exclusive upper bound.
+Table~\ref{tab:policy_spec} records the operational intervention anchor, and Table~\ref{tab:policy_intensity} records scenario-intensity assumptions. This separation makes explicit what is externally anchored versus what is treated as a simulation hypothesis.
 
 \begin{table}[!t]
 \centering
-\caption{Fixed policy scenario parameters (RQ2).}
+\caption{Operational intervention anchor (RQ2).}
 \label{tab:policy_spec}
 \begin{tabular}{lr}
 \hline
 Parameter & Value \\
 \hline
-$r^*$ (recency threshold) & 1 \\
+$r^*$ (weekly proxy for 7-day inactivity) & 1 \\
+Trigger frequency & weekly \\
 $W$ (active window length) & 2 \\
-$\delta_{shock}$ (hazard reduction factor) & 0.20 \\
-Mechanism-aware schedule: week-0 uplift & 0.35 \\
-Mechanism-aware schedule: week-1 uplift & 0.10 \\
-Decay type & step (2-week) \\
-Window upper bound & exclusive \\
+Intervention class & short-term digital nudge \\
+Anchor source & Kay \& Bostock (2023) \\
 \hline
 \end{tabular}
 \end{table}
+
+\begin{table}[!t]
+\centering
+\caption{Scenario-intensity assumptions for shock and shared mechanism-aware schedule (RQ2).}
+\label{tab:policy_intensity}
+\begin{tabular}{llp{0.53\columnwidth}}
+\hline
+Component & Value(s) & Interpretation \\
+\hline
+$\delta_{shock}$ & 0.08 & anchored conservative (qualitative anchor: Sneyers \& De Witte \cite{SneyersDeWitte2018InterventionsMeta}) \\
+$\delta_{shock}$ & 0.20 & hypothetical A (legacy baseline) \\
+$\delta_{shock}$ & 0.60 & hypothetical B (stress test) \\
+$\alpha_{week0}$ & 0.35 & shared mechanism-aware schedule parameter \\
+$\alpha_{week1}$ & 0.10 & shared mechanism-aware schedule parameter \\
+Decay type & kb2023\_step\_2w & shared mechanism-aware schedule parameter \\
+Window upper bound & exclusive & shared mechanism-aware schedule parameter \\
+\hline
+\end{tabular}
+\end{table}
+
+Operationally, the trigger and intervention class are anchored to Kay and Bostock \cite{KayBostock2023PowerNudge}, while shock intensity is treated as a scenario hypothesis under observational non-identification. The conservative scenario ($\delta_{shock}=0.08$) is anchored qualitatively, and the higher intensities are explicit hypothetical stress settings.
 
 \paragraph*{Regimes compared.}
 \begin{enumerate}
@@ -278,10 +297,10 @@ Window upper bound & exclusive \\
 observed hazard trajectory $\hat h_{it}^{(0)}$.
 
 \item \textbf{Shock regime ($a=1$, shock):}
-hazard scaled by $(1-\delta_{shock})$ within active weeks.
+hazard scaled by $(1-\delta_{shock,s})$ within active weeks, where $s$ indexes the scenario catalog.
 
 \item \textbf{Mechanism-aware regime ($a=1$, mech):}
-covariates overwritten within active weeks (clicks boosted by schedule factor, activity/recency/streak propagated statefully), then hazard recomputed via plug-in prediction.
+covariates overwritten within active weeks (click-based engagement boosted by schedule factor, activity/recency/streak propagated statefully), then hazard recomputed via plug-in prediction. The click perturbation is an LMS proxy analogous to participation/re-engagement dynamics in Kay and Bostock (2023), not a literal variable-level replication.
 \end{enumerate}
 
 Event rows are forced inactive in all regimes to prevent post-event counterfactual contamination. This rule ensures that counterfactual propagation only affects weeks in which the enrollment remains under risk.
@@ -291,7 +310,7 @@ For each regime, survival is reconstructed via the discrete-time product, and th
 \[
 \Delta S(t)=\bar S^{(1)}(t)-\bar S^{(0)}(t).
 \]
-Primary reporting focuses on $\Delta S(T_{policy})$ and $\Delta S(T_{eval\_metrics})$. These outputs provide the central empirical evidence for RQ2 under the interpretive contract of simulated regime comparison.
+Primary reporting for policy trajectories focuses on $\Delta S(T_{policy})$ and $\Delta S(T_{eval\_policy})$ by scenario; censoring-weighted metric diagnostics remain tied to $T_{eval\_metrics}$. These outputs provide the central empirical evidence for RQ2 under the interpretive contract of simulated regime comparison.
 
 %% -----------------------------------------------------------------------
 \subsection{Subgroup Evaluation Protocol (RQ3)}
@@ -400,7 +419,7 @@ The main text includes only evidence essential to the central argument, namely c
 \paragraph*{Reproducibility.}
 The complete pipeline---preprocessing, split generation, training and calibration, policy simulation, fairness diagnostics, and artifact export---is available at
 \url{https://github.com/rafa-rodriguess/TCM-Student-Dropout}
-\cite{RafaRepoTCMStudentDropout}. Horizon parameters ($T_{policy}$, $T_{eval\_metrics}$, $g_{min}$), policy specification ($r^*$, $W$, $\delta_{shock}$, schedule), and random seeds are recorded in the pipeline source. This traceability layer links the formal protocol described here to the executable notebook and exported evidence package.
+\cite{RafaRepoTCMStudentDropout}. Horizon parameters ($T_{policy}$, $T_{eval\_policy}$, $T_{eval\_metrics}$, $g_{min}$), policy specification ($r^*$, $W$, shared mechanism-aware schedule, and scenario-indexed $\delta_{shock}$), and random seeds are recorded in the pipeline source. The scenario contract is exported in \nolinkurl{table_policy_scenarios_main.csv} and \nolinkurl{table_policy_scenario_params.csv}, with trajectory outputs exported in \nolinkurl{table_policy_deltaS_by_week_by_scenario.csv} and \nolinkurl{table_policy_deltaS_at_horizons_by_scenario.csv}. This traceability layer links the formal protocol described here to the executable notebook and exported evidence package.
 
 %% -----------------------------------------------------------------------
 \subsection{Executable Pipeline Summary}
@@ -424,10 +443,10 @@ Algorithm~\ref{alg:pipeline} summarizes the end-to-end executable pipeline from 
 \State Perform enrollment-stratified temporal split with $q=4$ buckets and \texttt{test\_size}=0.30.
 \State Fit the discrete-time hazard model on training rows (penalized, class-balanced logistic + sigmoid calibration).
 \State Compute $\hat h^{(0)}_{it}$ on test rows; reconstruct $\hat S^{(0)}_i(t)=\prod_{k\le t}(1-\hat h^{(0)}_{ik})$.
-\State Apply the Recency-triggered policy ($r^*=1$, $W=2$):
-\State \hspace{6pt} \textit{Shock:} $\hat h^{(1,shock)}_{it}=\hat h^{(0)}_{it}(1-\delta_{shock})$ when active ($\delta_{shock}=0.2$).
-\State \hspace{6pt} \textit{Mechanism-aware:} overwrite covariates in the active window, propagate statefully, and recompute $\hat h^{(1,mech)}_{it}=f(X^{cf}_{it})$.
-\State Compute $\hat S^{(1)}_i(t)$ for each regime; report $\Delta S(T_{policy})$ and $\Delta S(T_{eval\_metrics})$.
+\State Apply the Recency-triggered policy ($r^*=1$, $W=2$) under scenario catalog $\delta_{shock}\in\{0.08,0.20,0.60\}$:
+\State \hspace{6pt} \textit{Shock:} $\hat h^{(1,shock,s)}_{it}=\hat h^{(0)}_{it}(1-\delta_{shock,s})$ when active.
+\State \hspace{6pt} \textit{Mechanism-aware:} overwrite covariates in the active window (primarily click-based engagement), propagate statefully, and recompute $\hat h^{(1,mech)}_{it}=f(X^{cf}_{it})$.
+\State Compute $\hat S^{(1)}_i(t)$ for each regime and scenario; report $\Delta S(T_{policy})$ and $\Delta S(T_{eval\_policy})$ by scenario.
 \State Report diagnostics: $AUC_{row}$, $BS_{IPCW}$, and IBS at both horizons.
 \State Perform subgroup validation (RQ3): compute $\bar\mu^{(a)}_g(t)$, $Gap^{(a)}(t)$, and $\Delta Gap(t)$ at $T_{policy}=18$ and $T_{eval}=37$.
 \State \hspace{6pt} Summarize subgroup uncertainty using $B=500$ bootstrap confidence intervals.
