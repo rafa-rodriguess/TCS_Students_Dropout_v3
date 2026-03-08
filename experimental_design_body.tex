@@ -152,7 +152,7 @@ The survival benchmark uses \texttt{CoxTimeVaryingFitter} from the \texttt{lifel
 A \texttt{HistGradientBoostingClassifier} with \texttt{max\_depth=6}, \texttt{learning\_rate=0.05}, \texttt{max\_iter=300}, and \texttt{random\_state=42}, plus ordinal encoding and the same Platt calibration protocol. This tree-based variant operates on person-period rows and is used in secondary robustness checks to verify that the main conclusions are not specific to the logistic model family.
 
 \paragraph*{Non-temporal baseline (Random Survival Forest).}
-A Random Survival Forest from the \texttt{scikit-survival} package (with classification fallback when needed) estimating $\hat p_i^{(T)}=1-\hat S_i(T)$ from enrollment-level static features only, without weekly trajectory inputs. It is evaluated at $T_{policy}$ and $T_{eval\_metrics}$ to isolate the contribution of the temporal person-period structure.
+A Random Survival Forest from the \texttt{scikit-survival} package (with classification fallback when needed) estimating $\hat p_i^{(T)}=1-\hat S_i(T)$ from enrollment-level static features only, without weekly trajectory inputs \cite{MogensenIshwaranGerds2012RSF}. It is evaluated at $T_{policy}$ and $T_{eval\_metrics}$ to isolate the contribution of the temporal person-period structure.
 
 %% -----------------------------------------------------------------------
 \subsection{Evaluation Horizons and Stability Rule}
@@ -223,6 +223,8 @@ ECE (15 bins) &
 \hline
 \end{tabular}
 \end{table}
+
+For survival/risk ranking we interpret the discrete C-index as a concordance-based discrimination measure under censoring, while ECE summarizes average bin-wise calibration error from reliability-style binning \cite{Uno2011CStatisticsCensored,Fan2021RecurrenceCalibration}.
 
 \paragraph*{Row-level AUC.}
 AUC is computed on person-period test rows using target $event_{it}$ and score $\hat h_{it}$. Because the evaluation unit is the person-period row, this metric diagnoses row-level hazard discrimination rather than static enrollment-level classification performance.
@@ -299,7 +301,7 @@ observed hazard trajectory $\hat h_{it}^{(0)}$.
 hazard scaled by $(1-\delta_{shock,s})$ within active weeks, where $s$ indexes the scenario catalog.
 
 \item \textbf{Mechanism-aware regime ($a=1$, mech):}
-covariates overwritten within active weeks (click-based engagement boosted by schedule factor, activity/recency/streak propagated statefully), then hazard recomputed via plug-in prediction. The click perturbation is an LMS proxy analogous to participation/re-engagement dynamics in Kay and Bostock (2023), not a literal variable-level replication.
+covariates overwritten within active weeks (click-based engagement boosted by schedule factor, activity/recency/streak propagated statefully), then hazard recomputed via plug-in prediction. The click perturbation is an LMS proxy analogous to participation/re-engagement dynamics in Kay and Bostock (2023), not a literal variable-level replication \cite{Ahmadi2023LMSEngagementIndicators,Nkomo2021StudentEngagementDigitalTech}.
 \end{enumerate}
 
 Event rows are forced inactive in all regimes to prevent post-event counterfactual contamination.
@@ -334,7 +336,7 @@ A total of $B=500$ bootstrap resamples with seed 42 are used to construct $95\%$
 if $0\notin CI_{95\%}(\Delta Gap(T))$, the direction of gap change is considered robust at horizon $T$.
 
 \paragraph*{Predictive fairness diagnostics.}
-By-group row-level metrics (AUC, Brier, and ECE with 15 bins) are exported on test rows, and a compact summary is retained in Appendix~A.
+By-group row-level metrics (AUC, Brier, and ECE with 15 bins) are exported on test rows, following the broader practice of subgroup-level performance and calibration auditing in fairness analysis \cite{Lu2022ReliabilityFairnessAudit,Opoku2025AccuracyFairness}, and a compact summary is retained in Appendix~A.
 
 %% -----------------------------------------------------------------------
 \subsection{Planned Robustness Battery}

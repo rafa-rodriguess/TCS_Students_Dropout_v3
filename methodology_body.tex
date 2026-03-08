@@ -5,7 +5,7 @@ The framework maps temporally indexed enrollment data to weekly hazard estimates
 \subsection{Motivation, Contributions, and Research Questions}
 
 \paragraph*{Motivation.}
-Static risk models primarily answer \textit{who} is at risk, but they do not by themselves determine \textit{when to act} under an auditable operational rule \cite{Prenkaj2021SurveyMLDropout,AndradeGiron2023DropoutMLReview}. In observational settings, the comparison of intervention scenarios must therefore be framed as a structural, model-implied exercise rather than as a causally identified effect estimate \cite{Connolly2018TrialsEvidenceBased,Gallagher2020ChallengeBased,Sidiropoulos2022AgencySustainability}. This study is motivated by that gap: the need for a temporally explicit framework that links weekly risk estimation to executable policy simulation and subgroup-sensitive interpretation.
+Static risk models primarily answer \textit{who} is at risk, but they do not by themselves determine \textit{when to act} under an auditable operational rule \cite{Prenkaj2021SurveyMLDropout,AndradeGiron2023DropoutMLReview}. In observational settings, the comparison of intervention scenarios must therefore be framed as a structural, model-implied exercise rather than as a causally identified effect estimate \cite{Connolly2018TrialsEvidenceBased,Gallagher2020ChallengeBased,Sidiropoulos2022AgencySustainability,Igelstrom2022CausalInferenceObs,DoutreligneVaroquaux2025PredictiveDecisionCausal}. This study is motivated by that gap: the need for a temporally explicit framework that links weekly risk estimation to executable policy simulation and subgroup-sensitive interpretation.
 
 \paragraph*{Contributions.}
 The framework has four components. First, it formalizes a discrete-time hazard pipeline for estimating survival trajectories from temporally indexed student records. Second, it introduces a policy simulation layer that compares \textit{shock} and \textit{stateful mechanism-aware} regimes under a common intervention rule. Third, it adds a subgroup fairness layer to quantify how the same policy changes outcome gaps across observable groups. Fourth, it specifies an executable protocol grounded in the notebook implementation and exported artifacts.
@@ -261,7 +261,7 @@ The central policy estimand is mean survival under each regime:
 \end{equation}
 Positive values indicate a survival gain under the policy regime relative to baseline.
 
-The interpretation of $\Delta S(t)$ is that of a \textit{simulated regime contrast} implied by the fitted model and the policy contract. It is not interpreted as a causally identified treatment effect.
+The interpretation of $\Delta S(t)$ is that of a \textit{simulated regime contrast} implied by the fitted model and the policy contract. It is not interpreted as a causally identified treatment effect \cite{Igelstrom2022CausalInferenceObs,DoutreligneVaroquaux2025PredictiveDecisionCausal}.
 
 \subsection{Fairness and Subgroup Track (RQ3)}
 
@@ -278,11 +278,11 @@ Gap^{(a)}(t)=\bar\mu_1^{(a)}(t)-\bar\mu_0^{(a)}(t)
 \label{eq:delta_gap}
 \Delta Gap(t)=Gap^{(1)}(t)-Gap^{(0)}(t).
 \end{equation}
-The sign of $\Delta Gap(t)$ indicates whether the policy enlarges or reduces the between-group difference at the horizon of interest. Uncertainty is estimated via bootstrap.
+The sign of $\Delta Gap(t)$ indicates whether the policy enlarges or reduces the between-group difference at the horizon of interest. Uncertainty is estimated via bootstrap, consistent with subgroup-oriented fairness auditing that reports performance and calibration gaps with interval estimates \cite{PessachShmueli2022FairnessReview,Lu2022ReliabilityFairnessAudit,Opoku2025AccuracyFairness}.
 
 \subsection{Benchmark Track}
 
-The benchmark track provides model-family reference comparisons without replacing the primary hazard pipeline. In the current main-text reporting, the benchmark centers on the temporal hazard model, its IPCW-weighted variant, and a non-temporal Random Survival Forest baseline at aligned horizons. Additional model families, including Cox time-varying specifications \cite{Cox1972RegressionModels}, can serve as auxiliary references.
+The benchmark track provides model-family reference comparisons without replacing the primary hazard pipeline. In the current main-text reporting, the benchmark centers on the temporal hazard model, its IPCW-weighted variant, and a non-temporal Random Survival Forest baseline at aligned horizons \cite{MogensenIshwaranGerds2012RSF}. Additional model families, including Cox time-varying specifications \cite{Cox1972RegressionModels}, can serve as auxiliary references.
 
 \subsection{Operational Assumptions}
 
