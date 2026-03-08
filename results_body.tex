@@ -35,14 +35,6 @@ Identify where $G(t)$ drops below $g_{min}=0.05$. \\
 Policy $\Delta S(t)$ by week &
 RQ2 policy contrast &
 Positive $\Delta S(t)$ means policy survival exceeds baseline survival. \\
-
-Benchmark dual-panel AUC &
-Family robustness &
-Check directional consistency across model families. \\
-
-RQ3 gap at $T_{policy}$ and $T_{eval\_metrics}$ &
-RQ3 subgroup contrast &
-Read the sign and uncertainty of $\Delta Gap(T)$ at $T_{policy}$ and $T_{eval\_metrics}$. \\
 \hline
 \end{tabular}
 \end{table}
@@ -202,33 +194,34 @@ Hypothetical B (stress test) & 0.60 & 0.0819 & 0.0760 & -0.0006 \\
 
 The shared mechanism-aware contrast is $\Delta S_{mech}(38)=-0.0062$ at $T_{eval\_policy}$, indicating that under the current schedule and propagated covariate channel, the mechanism-aware regime does not generate a positive survival gain in this run.
 
-\paragraph*{Mechanism diagnostic.}
-To explain why the shock and mechanism-aware regimes differ so sharply, Figure~\ref{fig:policy_mechanism_deltas} should be read as a transmission diagnostic. It shows whether policy-induced covariate deltas are large enough, and persistent enough, to alter downstream hazard meaningfully.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_policy_covariate_deltas_by_week.png}
-\caption{Mechanism diagnostic for policy propagation. Small or short-lived covariate deltas imply limited downstream hazard movement, consistent with the weak/negative mechanism-aware contrasts at fixed horizons in this run.}
-\label{fig:policy_mechanism_deltas}
-\end{figure}
-
 \paragraph*{RQ2 conclusion.}
 The framework answers RQ2 positively in structural terms: it can compare explicit regimes on a common temporal backbone and produce interpretable survival contrasts at fixed horizons. In the present configuration, the contrast is highly scenario-dependent in the shock branch (larger gains for larger $\delta$), while the mechanism-aware branch remains weak to negative under the current shared schedule.
 
 \subsection{Benchmark and Robustness Evidence}
 \label{subsec:benchmark_robust_results}
 
-The purpose of this subsection is not to replace the primary track, but to test whether the main interpretation remains stable under benchmark comparison and controlled design perturbations. The benchmark families used here are the \textit{Cox time-varying benchmark} and the \textit{non-temporal enrollment-level benchmark}; together, they provide the main cross-family reference against which the primary discrete-time model is read.
+The purpose of this subsection is not to replace the primary track, but to test whether the main interpretation remains stable under benchmark comparison and controlled design perturbations. In the current exported benchmark pack, the comparison is carried by the primary discrete-time hazard backbone, its IPCW-weighted variant, and the non-temporal enrollment-level RSF baseline.
 
 \paragraph*{Cross-family benchmark.}
-Figure~\ref{fig:benchmark_dual_panel} summarizes the primary model against benchmark families at aligned horizons. The key readout is directional convergence rather than rank ordering alone: the question is whether the substantive conclusion remains consistent across model families.
+Table~\ref{tab:benchmark_horizon_results} summarizes event-by-horizon AUC at $T_{policy}$ and $T_{eval\_metrics}$. The key readout is directional separation across model families at aligned horizons rather than row-level rank ordering alone.
 
-\begin{figure}[!t]
+\begin{table}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_benchmark_dual_panel_auc.png}
-\caption{Benchmark comparison across model families. Use this figure to verify whether the central directional conclusion is stable across the primary model, the Cox benchmark, and the non-temporal baseline.}
-\label{fig:benchmark_dual_panel}
-\end{figure}
+\caption{Cross-family benchmark at reported horizons.}
+\label{tab:benchmark_horizon_results}
+\small
+\begin{tabular}{lcc}
+\hline
+Model family & AUC$(T_{policy})$ & AUC$(T_{eval\_metrics})$ \\
+\hline
+Temporal hazard & 0.4803 & 0.4979 \\
+Temporal hazard + IPCW & 0.5220 & 0.5291 \\
+Non-temporal RSF & 0.6457 & 0.6388 \\
+\hline
+\end{tabular}
+\end{table}
+
+A supplementary row-level check between the two temporal variants yields test AUCs of 0.8405 and 0.8395, an absolute difference of approximately 0.0010. This confirms that the two temporal variants are nearly indistinguishable at row level, so the benchmark interpretation in this section is anchored on the horizon-level comparison above.
 
 \paragraph*{Ablation evidence.}
 \begin{table}[!t]
@@ -305,28 +298,14 @@ RQ3 tests whether the same policy regime produces differential group contrasts, 
 \end{equation*}
 Negative values indicate reduced gap under policy relative to baseline for the group coding used in this run.
 
-\paragraph*{Primary figure-level evidence.}
-The fairness interpretation pipeline is summarized in Figure~\ref{fig:fairness_pipeline_graph}. Figures~\ref{fig:rq3_gap_tpolicy} and \ref{fig:rq3_gap_teval} are then read as horizon-specific outputs of that pipeline.
+\paragraph*{Primary evidence.}
+The fairness interpretation pipeline is summarized in Figure~\ref{fig:fairness_pipeline_graph}. Table~\ref{tab:rq3_summary} then reports the signed contrast and bootstrap uncertainty for both reported horizons.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=0.45\textwidth]{figures/fig_fairness_pipeline.png}
 \caption{Fairness/subgroup pipeline used in RQ3. It links groupwise survival aggregation, change-in-gap computation, and bootstrap uncertainty for a selected policy scenario under the shared trigger contract.}
 \label{fig:fairness_pipeline_graph}
-\end{figure}
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_rq3_gap_Tpolicy.png}
-\caption{RQ3 gap result at $T_{policy}=18$. Interpretation requires combining sign, magnitude, and confidence-interval support.}
-\label{fig:rq3_gap_tpolicy}
-\end{figure}
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_rq3_gap_Teval.png}
-\caption{RQ3 gap result at $T_{eval\_metrics}=37$. Consistency with $T_{policy}$ is part of the robustness readout.}
-\label{fig:rq3_gap_teval}
 \end{figure}
 
 \begin{table}[!t]

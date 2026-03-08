@@ -32,8 +32,8 @@ digraph fairness_pipeline {
 
     subgraph cluster_outputs {
         label="Reported outputs"; style="dashed"; color="#007A33";
-        O1 [label="fig_rq3_gap_Tpolicy.png", fillcolor="#D4EDDA"];
-        O2 [label="fig_rq3_gap_Teval.png", fillcolor="#D4EDDA"];
+        O1 [label="RQ3 summary table\n(T_policy, T_eval_metrics)", fillcolor="#D4EDDA"];
+        O2 [label="Pipeline figure\n(reading contract)", fillcolor="#D4EDDA"];
         O3 [label="Bootstrap diagnostics\n(histograms / wide table)", fillcolor="#D4EDDA"];
         O4 [label="Direct RQ3 answer\nsign and uncertainty", fillcolor="#D4EDDA", shape=doubleoctagon];
     }
