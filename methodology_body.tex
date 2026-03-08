@@ -15,7 +15,7 @@ RQ1 asks whether the temporal model produces weekly hazard estimates that are su
 
 \paragraph*{Propositions.}
 \begin{proposition}[Temporal bridge]
-If $\hat h_{it}$ is estimated on person-period data without temporal leakage, then $\hat S_i(t)$ defines usable temporal risk windows for decision support.
+If $\hat h_{it}$ is estimated on person-period data without temporal leakage, then $\hat S_i(t)$ defines candidate temporal risk windows for downstream analysis.
 \end{proposition}
 
 \begin{proposition}[Regime contrast]
@@ -282,7 +282,7 @@ The sign of $\Delta Gap(t)$ indicates whether the policy enlarges or reduces the
 
 \subsection{Benchmark Track}
 
-The benchmark track provides model-family reference comparisons without replacing the primary hazard pipeline. It includes a Cox baseline with time-varying covariates \cite{Cox1972RegressionModels} and contextualizes the discrete-time hazard model while preserving it as the principal framework for RQ1--RQ3.
+The benchmark track provides model-family reference comparisons without replacing the primary hazard pipeline. In the current main-text reporting, the benchmark centers on the temporal hazard model, its IPCW-weighted variant, and a non-temporal Random Survival Forest baseline at aligned horizons. Additional model families, including Cox time-varying specifications \cite{Cox1972RegressionModels}, can serve as auxiliary references.
 
 \subsection{Operational Assumptions}
 

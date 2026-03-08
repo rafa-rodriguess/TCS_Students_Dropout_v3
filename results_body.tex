@@ -54,13 +54,13 @@ Table~\ref{tab:rq_answers} gives the direct empirical answers before the detaile
 RQ & Direct answer from results \\
 \hline
 RQ1 &
-Yes. Weekly hazard discrimination is stable (AUC train 0.8350, test 0.8405), and calibration diagnostics support the use of hazard trajectories for decision timing. \\
+Yes, for temporal risk ranking, with caution in the highest-risk tail. Weekly hazard discrimination is stable (AUC train 0.8350, test 0.8405), while calibration is adequate in aggregate but sparsely supported in the highest-risk bins. \\
 
 RQ2 &
-Yes, with strong scenario dependence under a fixed trigger. At $T_{policy}=18$, shock contrasts are $\Delta S=0.0102$ (anchored conservative, $\delta=0.08$), $0.0260$ (hypothetical A, $\delta=0.20$), and $0.0819$ (hypothetical B, $\delta=0.60$), while the mechanism-aware contrast is $\Delta S=-0.0006$. \\
+Yes, for structural scenario comparison, but not for a uniform positive gain across branches. At $T_{policy}=18$, shock contrasts are $\Delta S=0.0102$ (anchored conservative, $\delta=0.08$), $0.0260$ (hypothetical A, $\delta=0.20$), and $0.0819$ (hypothetical B, $\delta=0.60$), while the mechanism-aware contrast is $\Delta S=-0.0006$. \\
 
 RQ3 &
-Yes, in directional terms. $\Delta Gap(T_{policy})=-0.00050816$ and $\Delta Gap(T_{eval\_metrics})=-0.00056691$, with 95\% bootstrap intervals excluding zero at both horizons, indicating a robust direction under the reported scenario. \\
+Yes, in directional terms only. $\Delta Gap(T_{policy})=-0.00050816$ and $\Delta Gap(T_{eval\_metrics})=-0.00056691$, with 95\% bootstrap intervals excluding zero at both horizons, indicating a stable sign under the reported scenario at very small magnitude. \\
 \hline
 \end{tabular}
 \end{table}
@@ -104,8 +104,10 @@ Bin 10 & [0.667, 0.733) & 3 & 3 & 0 \\
 \end{tabular}
 \end{table}
 
+Aggregate calibration is acceptable, but the highest-risk bins have very limited support and should be interpreted cautiously.
+
 \paragraph*{When to act: temporal decision window.}
-Figure~\ref{fig:survival_baseline_rq1} connects predictive quality to decision timing. For RQ1, the baseline trajectory is the key object: periods of steeper decline define the weeks in which temporal monitoring is most decision-relevant.
+Figure~\ref{fig:survival_baseline_rq1} connects predictive quality to temporal risk concentration. For RQ1, the baseline trajectory is the key object: periods of steeper decline define weeks in which relative risk separation is most visible.
 
 \begin{figure}[!t]
 \centering
@@ -115,7 +117,7 @@ Figure~\ref{fig:survival_baseline_rq1} connects predictive quality to decision t
 \end{figure}
 
 \paragraph*{RQ1 conclusion.}
-Taken together, the discrimination and calibration evidence supports the use of the model for weekly timing signals, subject to the censoring-valid horizons established next.
+Taken together, the discrimination and calibration evidence supports the use of the model as a temporal risk-ranking and trajectory-analysis backbone, subject to the censoring-valid horizons established next and to limited support in the highest-risk tail bins.
 
 \subsection{Censoring Validity and the Dual-Horizon Rule}
 \label{subsec:censoring_results}
@@ -152,7 +154,7 @@ Weighted metrics and contrast summaries are interpreted only at horizons with ac
 \subsection{RQ2: Policy Simulation and Structural Regime Contrast}
 \label{subsec:rq2_results}
 
-RQ2 asks whether an explicit policy rule changes model-implied survival trajectories under fixed protocol settings. The answer is yes, but the magnitude of the contrast depends strongly on how the policy enters the system.
+RQ2 asks whether an explicit policy rule changes model-implied survival trajectories under fixed protocol settings. The framework yields interpretable structural contrasts, but the sign and magnitude depend strongly on how the policy enters the system.
 
 \paragraph*{Definition used in reporting.}
 \begin{equation*}
@@ -191,7 +193,7 @@ Hypothetical B (stress test) & 0.60 & 0.0819 & 0.0760 & -0.0006 \\
 The shared mechanism-aware contrast is $\Delta S_{mech}(38)=-0.0062$ at $T_{eval\_policy}$, indicating that under the current schedule and propagated covariate channel, the mechanism-aware regime does not generate a positive survival gain in this run.
 
 \paragraph*{RQ2 conclusion.}
-The framework answers RQ2 positively in structural terms: it compares explicit regimes on a common temporal backbone and produces interpretable survival contrasts at fixed horizons. In the present configuration, the contrast is highly scenario-dependent in the shock branch, while the mechanism-aware branch remains weak to negative under the current shared schedule.
+For RQ2, the main result is that the framework compares explicit regimes on a common temporal backbone and produces interpretable survival contrasts at fixed horizons. In the present configuration, positive contrasts are restricted to the shock branch and are highly scenario-dependent, while the mechanism-aware branch remains weak to negative under the current shared schedule.
 
 \subsection{Benchmark and Robustness Evidence}
 \label{subsec:benchmark_robust_results}
@@ -292,10 +294,10 @@ RQ3 tests whether the same policy regime produces differential group contrasts, 
 \begin{equation*}
 \Delta Gap(T)=Gap^{(1)}(T)-Gap^{(0)}(T).
 \end{equation*}
-Negative values indicate reduced gap under policy relative to baseline for the group coding used in this run.
+Negative values indicate a reduction in the reported gender gap (F minus M) under policy relative to baseline.
 
 \paragraph*{Primary evidence.}
-The fairness interpretation pipeline is summarized in Figure~\ref{fig:fairness_pipeline_graph}. Table~\ref{tab:rq3_summary} reports the signed contrast and bootstrap uncertainty for both reported horizons.
+The fairness interpretation pipeline is summarized in Figure~\ref{fig:fairness_pipeline_graph}. Table~\ref{tab:rq3_summary} reports the signed gender-based contrast and bootstrap uncertainty for both reported horizons.
 
 \begin{figure}[!t]
 \centering
@@ -321,7 +323,7 @@ $T_{eval\_metrics}=37$ & $-0.00056691$ & $(-0.00071529,\,-0.00040728)$ \\
 Both intervals exclude zero, so the direction is robust at both horizons for the reported scenario.
 
 \paragraph*{RQ3 conclusion.}
-The framework answers RQ3 positively at the level it proposes: it quantifies subgroup-sensitive structural contrasts and attaches uncertainty to their directional interpretation.
+For RQ3, the framework quantifies subgroup-sensitive structural contrasts and attaches uncertainty to their directional interpretation. In the reported gender example, the sign is stable across horizons, but the magnitude remains very small.
 
 \subsection{Results Synthesis}
 \label{subsec:results_synthesis}
@@ -329,9 +331,9 @@ The framework answers RQ3 positively at the level it proposes: it quantifies sub
 The empirical evidence supports the paper objective in four direct points:
 
 \begin{enumerate}
-\item Weekly hazard quality is sufficient for temporal decision support (RQ1).
-\item Regime comparison is operational and auditable through $\Delta S(t)$ (RQ2).
-\item The same policy can be audited for subgroup differentials via $\Delta Gap(T)$ (RQ3).
+\item Weekly hazard quality is sufficient for temporal risk ranking and trajectory analysis, with caution in the highest-risk tail bins (RQ1).
+\item Regime comparison is operational and auditable through $\Delta S(t)$, but positive gains are scenario-dependent and do not extend to the current mechanism-aware branch (RQ2).
+\item The same policy can be audited for subgroup differentials via $\Delta Gap(T)$, with directionally stable but very small contrasts in the reported gender example (RQ3).
 \item The main interpretation remains directionally coherent under benchmark and robustness axes.
 \end{enumerate}
 
@@ -346,4 +348,4 @@ The results are interpreted under three limits:
 \item endpoint and domain-shift robustness indicate sensitivity ranges, not universal transportability.
 \end{itemize}
 
-Within these limits, the section answers the paper objective directly: a reproducible temporal pipeline can translate weekly risk into explicit policy and subgroup diagnostics.
+Within these limits, the section answers the paper objective directly: a reproducible temporal pipeline can translate weekly risk into structured policy and subgroup diagnostics.

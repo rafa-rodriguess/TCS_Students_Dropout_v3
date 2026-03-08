@@ -128,14 +128,16 @@ Variant & Role \\
 \hline
 Discrete-time logistic (primary) &
   Main hazard model. Source of $\hat h_{it}$ and $\hat S_i(t)$ for policy and fairness tracks. \\
+Temporal hazard + IPCW &
+  Weighted diagnostic variant of the primary model, used in the reported horizon-level benchmark pack. \\
 HistGradientBoosting (temporal) &
-  Tree-based temporal baseline on person-period rows; used in benchmark and ablation packs. \\
+  Auxiliary tree-based temporal diagnostic on person-period rows; used in secondary robustness checks. \\
 Cox time-varying &
-  Classical survival benchmark with start--stop weekly intervals~\cite{Cox1972RegressionModels}. \\
+  Auxiliary classical survival reference with start--stop weekly intervals~\cite{Cox1972RegressionModels}. \\
 Random Survival Forest (non-temporal) &
   Enrollment-level tree-based baseline without weekly trajectory inputs. \\
 Unified benchmark pack &
-  Standardized comparison of temporal vs.\ non-temporal families at aligned horizons. \\
+  Main-text comparison of temporal hazard, temporal hazard + IPCW, and non-temporal RSF at aligned horizons. \\
 \hline
 \end{tabular}
 \end{table}
@@ -144,10 +146,10 @@ Unified benchmark pack &
 The primary model is logistic regression with \texttt{solver=liblinear}, \texttt{max\_iter=4000}, \texttt{class\_weight=balanced}, and \texttt{random\_state=42}. Numeric features (\texttt{total\_clicks}, \texttt{studied\_credits}, \texttt{num\_of\_prev\_attempts}, \texttt{recency}, \texttt{streak}, \texttt{submitted\_this\_week}) are standardized, while categorical variables (\texttt{week}, \texttt{code\_module}, \texttt{code\_presentation}, \texttt{highest\_education}, \texttt{age\_band}, \texttt{gender}) are one-hot encoded with unknown categories ignored. Probability calibration uses \texttt{CalibratedClassifierCV(method=\allowbreak"sigmoid", ensemble=False)} with precomputed GroupKFold splits at the enrollment level. This model is the main source of weekly hazard estimates and reconstructed survival curves.
 
 \paragraph*{Cox time-varying specification.}
-The survival benchmark uses \texttt{CoxTimeVaryingFitter} from the \texttt{lifelines} package with \texttt{penalizer=0.01} and start--stop weekly intervals, using numeric covariates available at the weekly level. Its role is to provide a classical survival-analysis reference under the same temporal data construction.
+The survival benchmark uses \texttt{CoxTimeVaryingFitter} from the \texttt{lifelines} package with \texttt{penalizer=0.01} and start--stop weekly intervals, using numeric covariates available at the weekly level. Its role is to provide an auxiliary classical survival-analysis reference under the same temporal data construction.
 
 \paragraph*{HistGradientBoosting (temporal diagnostic).}
-A \texttt{HistGradientBoostingClassifier} with \texttt{max\_depth=6}, \texttt{learning\_rate=0.05}, \texttt{max\_iter=300}, and \texttt{random\_state=42}, plus ordinal encoding and the same Platt calibration protocol. This tree-based variant operates on person-period rows and is used in the benchmark and ablation packs to verify that the main conclusions are not specific to the logistic model family.
+A \texttt{HistGradientBoostingClassifier} with \texttt{max\_depth=6}, \texttt{learning\_rate=0.05}, \texttt{max\_iter=300}, and \texttt{random\_state=42}, plus ordinal encoding and the same Platt calibration protocol. This tree-based variant operates on person-period rows and is used in secondary robustness checks to verify that the main conclusions are not specific to the logistic model family.
 
 \paragraph*{Non-temporal baseline (Random Survival Forest).}
 A Random Survival Forest from the \texttt{scikit-survival} package (with classification fallback when needed) estimating $\hat p_i^{(T)}=1-\hat S_i(T)$ from enrollment-level static features only, without weekly trajectory inputs. It is evaluated at $T_{policy}$ and $T_{eval\_metrics}$ to isolate the contribution of the temporal person-period structure.
@@ -332,7 +334,7 @@ A total of $B=500$ bootstrap resamples with seed 42 are used to construct $95\%$
 if $0\notin CI_{95\%}(\Delta Gap(T))$, the direction of gap change is considered robust at horizon $T$.
 
 \paragraph*{Predictive fairness diagnostics.}
-By-group row-level metrics (AUC, Brier, and ECE with 15 bins) and calibration curves are reported on test rows.
+By-group row-level metrics (AUC, Brier, and ECE with 15 bins) are exported on test rows, and a compact summary is retained in Appendix~A.
 
 %% -----------------------------------------------------------------------
 \subsection{Planned Robustness Battery}
@@ -411,7 +413,7 @@ claim_j \;\rightarrow\; \{metric_j,\; figure_k,\; table_m,\; horizon_h\},
 where figures and tables correspond to exported artifacts under \texttt{outputs\_v2/figures/} and \texttt{outputs\_v2/tables/}.
 
 \paragraph*{Main text vs.\ appendix.}
-The main text includes evidence essential to the central argument, namely calibration, $\Delta S$, $\Delta Gap$, and benchmark convergence. Extended diagnostics, including per-group calibration curves, covariate delta profiles, and bootstrap histograms, are placed in the appendix.
+The main text includes evidence essential to the central argument, namely calibration, $\Delta S$, $\Delta Gap$, and benchmark convergence. Extended diagnostics, including compact by-group summaries and bootstrap histograms, are placed in the appendix, while additional exported diagnostics remain in the artifact package.
 
 \paragraph*{Reproducibility.}
 The complete pipeline---preprocessing, split generation, training and calibration, policy simulation, fairness diagnostics, and artifact export---is available at

@@ -29,8 +29,28 @@ The compact confidence-interval summaries are reported in
 \texttt{rq3\_policy\_bootstrap\_wide.csv}, available in the
 \texttt{outputs\_v2/tables} artifact folder, including both $T_{policy}$ and $T_{eval\_metrics}$ summaries.
 
-\subsection{A.2 Scope}
+\subsection{A.2 Compact By-Group Predictive Diagnostics}
 
-Appendix~A is constrained to diagnostics with the highest relevance to the core argument. Additional diagnostics, including IPCW calibration robustness and calibration-by-group, remain available in the exported artifact package under \texttt{outputs\_v2/figures} and \texttt{outputs\_v2/tables}.
+Table~\ref{tab:app_group_metrics} summarizes the exported by-group row-level diagnostics for the reported gender analysis. These diagnostics contextualize the subgroup contrast by showing that predictive quality is similar across groups in the current run.
+
+\begin{table}[!t]
+\centering
+\caption{By-group predictive diagnostics for the reported gender analysis.}
+\label{tab:app_group_metrics}
+\begin{tabular}{lccc}
+\hline
+Group & AUC$_{row}$ & Brier & ECE \\
+\hline
+F & 0.8392 & 0.0089 & 0.0018 \\
+M & 0.8410 & 0.0098 & 0.0020 \\
+\hline
+\end{tabular}
+\end{table}
+
+Calibration curves and additional by-group diagnostics remain available in the exported artifact package under \texttt{outputs\_v2/tables} and \texttt{outputs\_v2/figures}.
+
+\subsection{A.3 Scope}
+
+Appendix~A is constrained to diagnostics with the highest relevance to the core argument. Additional diagnostics, including IPCW calibration robustness and more detailed calibration-by-group outputs, remain available in the exported artifact package under \texttt{outputs\_v2/figures} and \texttt{outputs\_v2/tables}.
 
 All conclusions remain within the same contract used throughout the paper: the reported quantities are \textit{model-implied simulated regime contrasts} under explicit protocol rules.
