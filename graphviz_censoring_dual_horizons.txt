@@ -1,5 +1,5 @@
 // G3 — Censoring-Aware Evaluation and Dual Horizons
-// Compile: dot -Tpng graphviz_censoring_dual_horizons.txt -o fig_censoring_dual_horizons.png
+// Compile: dot -Tpng graphviz_censoring_dual_horizons.txt -o figures/fig_censoring_dual_horizons.png
 
 digraph censoring_dual_horizons {
     rankdir=TB;
@@ -39,20 +39,20 @@ digraph censoring_dual_horizons {
         label="Metric Evaluation Under Censoring"; style="dashed"; color="#007A33"; fontsize=10;
         ME1 [label="At T_policy = 18\nĜ(18) = 0.796\n(strong support)", fillcolor="#D4EDDA"];
         ME2 [label="At T_eval_metrics = 37\nĜ(37) = 0.060\n(near threshold)", fillcolor="#D4EDDA"];
-        ME3 [label="At T = 38\nĜ(38) ≈ 10⁻¹²\n(unstable — excluded)", fillcolor="#F8CECC", style="rounded,filled,dashed"];
+        ME3 [label="At T_eval_policy = 38\nĜ(38) ≈ 10⁻¹²\n(excluded for IPCW metrics;\nkept for raw trajectories)", fillcolor="#F8CECC", style="rounded,filled,dashed"];
     }
 
     // --- Outputs at T_policy ---
     subgraph cluster_out_tp {
         label="Reported at T_policy = 18"; style="dashed"; color="#D97B00"; fontsize=10;
         TP1 [label="IPCW Brier(18)\nIBS(0..18)", fillcolor="#FFE6CC"];
-        TP2 [label="ΔS_shock(18)\nΔS_mech(18)", fillcolor="#FFE6CC"];
+        TP2 [label="ΔS_shock(18) and ΔS_mech(18)\n(policy trajectories by scenario)", fillcolor="#FFE6CC"];
         TP3 [label="ΔGap(18) + bootstrap CI", fillcolor="#FFE6CC"];
     }
 
     // --- Outputs at T_eval ---
     subgraph cluster_out_te {
-        label="Reported at T_eval = 37"; style="dashed"; color="#D97B00"; fontsize=10;
+        label="Reported at T_eval_metrics = 37"; style="dashed"; color="#D97B00"; fontsize=10;
         TE1 [label="IPCW Brier(37)\nIBS(0..37)", fillcolor="#FFE6CC"];
         TE2 [label="C-index_discrete(37)", fillcolor="#FFE6CC"];
         TE3 [label="ΔGap(37) + bootstrap CI", fillcolor="#FFE6CC"];

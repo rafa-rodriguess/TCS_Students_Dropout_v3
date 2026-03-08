@@ -11,7 +11,7 @@ Figure~\ref{fig:pipeline_endtoend} provides an end-to-end overview of the evalua
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_pipeline_endtoend.png}
-\caption{End-to-end pipeline: data integration, temporal construction, modeling, policy simulation, and fairness evaluation mapped to the seven executable tracks and the three research questions.}
+\caption{End-to-end pipeline: data integration, temporal construction, modeling, policy simulation, and fairness evaluation mapped to seven executable tracks and RQ1--RQ3, including dual-horizon semantics ($T_{policy}$, $T_{eval\_policy}$, $T_{eval\_metrics}$) and scenario-indexed shock intensity in RQ2.}
 \label{fig:pipeline_endtoend}
 \end{figure}
 
@@ -165,7 +165,7 @@ Because censoring support deteriorates over time, late-horizon evaluation requir
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_censoring_dual_horizons.png}
-\caption{Censoring-aware evaluation flow: the conditional censoring model determines IPCW weights and horizon stability, yielding two distinct reporting horizons.}
+\caption{Censoring-aware evaluation flow: the conditional censoring model determines IPCW weights and horizon stability, separating $T_{eval\_metrics}=37$ for weighted metrics from $T_{eval\_policy}=38$ for raw policy trajectories, with $T_{policy}=18$ as the substantive reporting horizon.}
 \label{fig:censoring_dual_horizons}
 \end{figure}
 
@@ -348,7 +348,7 @@ The robustness plan was defined before examining comparative outcomes. Its purpo
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_benchmark_robustness.png}
-\caption{Benchmark and robustness battery: the primary model is compared against alternative families (benchmark), feature subsets (ablation), unseen course runs (OOD), and an alternative endpoint (sensitivity). All axes feed a sign-consistency convergence criterion.}
+\caption{Benchmark and robustness battery: the primary model is compared against alternative families (benchmark), feature subsets (ablation), unseen course runs (OOD), and an alternative endpoint (sensitivity), with convergence read at $T_{policy}$ and $T_{eval\_metrics}$ and interpreted under the scenario-aware RQ2 policy contract.}
 \label{fig:benchmark_robustness}
 \end{figure}
 

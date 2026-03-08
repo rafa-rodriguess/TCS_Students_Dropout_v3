@@ -1,5 +1,5 @@
 // G1 — Pipeline End-to-End: Tracks and RQ Mapping
-// Compile: dot -Tpng graphviz_pipeline_endtoend.txt -o fig_pipeline_endtoend.png
+// Compile: dot -Tpng graphviz_pipeline_endtoend.txt -o figures/fig_pipeline_endtoend.png
 
 digraph pipeline_endtoend {
     rankdir=TB;
@@ -46,7 +46,7 @@ digraph pipeline_endtoend {
         label="Track 3 — Censoring & IPCW"; style="dashed"; color="#9673A6"; fontsize=10;
         C1 [label="Conditional censoring model\n(Ĝ_it on train)", fillcolor="#E1D5E7"];
         C2 [label="IPCW weights\nw_it = 1/max(Ĝ_it, g_min)", fillcolor="#E1D5E7"];
-        C3 [label="Dual horizons\nT_policy=18, T_eval_metrics=37", fillcolor="#E1D5E7"];
+        C3 [label="Dual horizons\nT_policy=18, T_eval_policy=38,\nT_eval_metrics=37", fillcolor="#E1D5E7"];
     }
 
     // --- Benchmark layer ---
@@ -55,16 +55,16 @@ digraph pipeline_endtoend {
         B1 [label="Cox time-varying\n(penalizer=0.01)", fillcolor="#F5F5F5"];
         B2 [label="HistGradientBoosting\n(temporal, tree-based)", fillcolor="#F5F5F5"];
         B3 [label="Random Survival Forest\n(non-temporal, enrollment-level)", fillcolor="#F5F5F5"];
-        B4 [label="Unified benchmark\ncomparison at T_policy=18\nand T_eval=37", fillcolor="#F5F5F5"];
+        B4 [label="Unified benchmark\ncomparison at T_policy=18\nand T_eval_metrics=37", fillcolor="#F5F5F5"];
     }
 
     // --- Policy layer ---
     subgraph cluster_policy {
         label="Track 6 — Policy Simulation (RQ2)"; style="dashed"; color="#D97B00"; fontsize=10;
-        P1 [label="Recency trigger\nr*=1, W=2", fillcolor="#FFE6CC"];
-        P2 [label="Shock regime\nδ_shock=0.20", fillcolor="#FFE6CC"];
-        P3 [label="Mechanism-aware regime\n(stateful covariate propagation)", fillcolor="#FFE6CC"];
-        P4 [label="ΔS(t) = S̄¹(t) − S̄⁰(t)\nat T_policy and T_eval", fillcolor="#FFE6CC"];
+        P1 [label="Operational trigger anchor\nr*=1 (7-day inactivity proxy),\nweekly, W=2", fillcolor="#FFE6CC"];
+        P2 [label="Shock scenario catalog\nδ_shock in {0.08, 0.20, 0.60}\n(anchored + hypothetical)", fillcolor="#FFE6CC"];
+        P3 [label="Mechanism-aware regime\nshared schedule + stateful\nclick-based covariate propagation", fillcolor="#FFE6CC"];
+        P4 [label="ΔS(t) = S̄¹(t) − S̄⁰(t)\nreported by scenario\nat T_policy and T_eval_policy", fillcolor="#FFE6CC"];
     }
 
     // --- Fairness layer ---

@@ -1,5 +1,5 @@
 // G4 — Benchmark and Robustness Battery Design
-// Compile: dot -Tpng graphviz_benchmark_robustness.txt -o fig_benchmark_robustness.png
+// Compile: dot -Tpng graphviz_benchmark_robustness.txt -o figures/fig_benchmark_robustness.png
 
 digraph benchmark_robustness {
     rankdir=TB;
@@ -21,7 +21,10 @@ digraph benchmark_robustness {
     }
 
     // --- Unified evaluation ---
-    UNIFIED [label="Unified benchmark readout\naligned at T_policy=18\nand T_eval=37", fillcolor="#FFF2CC"];
+    UNIFIED [label="Unified benchmark readout\naligned at T_policy=18\nand T_eval_metrics=37", fillcolor="#FFF2CC"];
+
+    // --- Policy scenario contract context ---
+    PSC [label="Policy scenario contract (RQ2 context)\ndelta_shock in {0.08, 0.20, 0.60}\nanchored + hypothetical stress tests", fillcolor="#FFE6CC"];
 
     // --- Ablation ---
     subgraph cluster_ablation {
@@ -48,7 +51,7 @@ digraph benchmark_robustness {
     }
 
     // --- Convergence check ---
-    CONV [label="Convergence criterion\nsign(ΔS_main) = sign(ΔS_bench)\nplus robustness-axis consistency", fillcolor="#FFF2CC", shape=doubleoctagon];
+    CONV [label="Convergence criterion\nsign(ΔS_main) = sign(ΔS_bench)\nat T_policy and T_eval_metrics\nplus robustness-axis consistency", fillcolor="#FFF2CC", shape=doubleoctagon];
 
     // --- Edges ---
     PRIMARY -> UNIFIED;
@@ -65,6 +68,7 @@ digraph benchmark_robustness {
     EP2 -> EP3;
 
     UNIFIED -> CONV;
+    PSC -> CONV [style=dashed, label="context\nalignment"];
     {AB2 AB3} -> CONV;
     OOD3 -> CONV;
     EP3 -> CONV;

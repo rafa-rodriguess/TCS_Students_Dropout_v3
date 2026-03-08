@@ -12,7 +12,7 @@ digraph fairness_pipeline {
     subgraph cluster_inputs {
         label="Inputs"; style="dashed"; color="#4A90D9";
         I1 [label="Test enrollments\nwith baseline survival S^(0)", fillcolor="#D5E8D4"];
-        I2 [label="Policy survival S^(1)\n(same trigger/spec)", fillcolor="#D5E8D4"];
+        I2 [label="Policy survival S^(1)\n(selected scenario under shared trigger)", fillcolor="#D5E8D4"];
         I3 [label="Group variable\n(example: gender)", fillcolor="#D5E8D4"];
     }
 
@@ -26,7 +26,7 @@ digraph fairness_pipeline {
     subgraph cluster_uncertainty {
         label="Uncertainty"; style="dashed"; color="#D97B00";
         U1 [label="Bootstrap resampling\nB=500, seed=42", fillcolor="#FFE6CC"];
-        U2 [label="95% CI for DeltaGap(T)\nT_policy=18, T_eval=37", fillcolor="#FFE6CC", shape=doubleoctagon];
+        U2 [label="95% CI for DeltaGap(T)\nT_policy=18, T_eval_metrics=37", fillcolor="#FFE6CC", shape=doubleoctagon];
         U3 [label="Reading rule\n0 not in CI => robust direction", fillcolor="#FFE6CC"];
     }
 
