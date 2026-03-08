@@ -37,6 +37,10 @@ Escopo desta revisao:
 - O estado atual dos resultados mostra dominancia de `non_temporal_rsf` em `AUC_event_by_T_*`.
 - O argumento do paper deve ficar ancorado em decisao temporal auditavel, trajetorias e contrasts estruturais de regime.
 
+6. Ancoragem do impacto em covariaveis no regime mechanism-aware:
+- O manuscrito deve deixar explicito que a propagacao em covariaveis de engajamento e inspirada qualitativamente na logica de desengajamento/reengajamento de `Kay & Bostock (2023)`, e nao apresentada como replicacao literal das variaveis ou magnitudes do estudo.
+- Se o evidence package exportado mostrar evidencia material concentrada em `total_clicks` ou em proxy de participacao click-based, o texto deve refletir isso e evitar prometer propagacao ampla em multiplas covariaveis sem suporte exportado.
+
 ## Dimensoes da revisao editorial pedida nesta etapa
 
 Nesta expansao, a revisao passa a cobrir quatro camadas por arquivo:
@@ -124,11 +128,15 @@ Problemas identificados:
 - A notacao da janela continua em `W` sem amarrar o nome canonico exportado `W_weeks`.
 - O texto matematico usa `delta_shock` apenas como simbolo, mas a metodologia ainda nao deixa claro o nome congelado do parametro exportado: `delta_shock_ablation`.
 - Falta amarrar explicitamente a ancora da policy ao artefato correto (`table_policy_spec.csv`) e ao estudo de `Kay & Bostock (2023)`.
+- Falta explicitar que o bloco mechanism-aware usa covariaveis de engajamento como proxies inspiradas na logica de participacao/reengajamento de `Kay & Bostock (2023)`, e nao como reproducao literal do paper-fonte.
+- Falta delimitar, no proprio texto metodologico, o que esta ancorado externamente e o que e apenas modelado como proxy interna; isso vale especialmente para `total_clicks` e demais covariaveis de estado de engajamento.
 - Falta registrar, na metodologia/reprodutibilidade, a regra de citacao entre `table_policy_spec.csv` e `table_policy_scenario_params.csv`.
 
 Direcao da futura alteracao:
 - Manter `W` e `delta_shock` na notacao matematica, se desejado, mas declarar explicitamente no texto que os nomes canonicos exportados sao `W_weeks` e `delta_shock_ablation`.
 - Inserir a ancora bibliografica e a definicao operacional do gatilho no bloco metodologico de policy.
+- Inserir uma frase explicita dizendo que as covariaveis mechanism-aware sao proxies LMS-based inspiradas pela logica de `Kay & Bostock (2023)`, com destaque para o eixo de participacao click-based quando isso for o que o pacote exportado efetivamente sustenta.
+- Se o run exportado atual nao materializa propagacao ampla alem de `total_clicks`, o texto deve assumir essa limitacao de forma aberta, e nao vender um mecanismo mais rico do que a evidencia exportada mostra.
 - Acrescentar referencia explicita aos artefatos `table_policy_spec.csv` e `table_policy_horizons_dual.csv` como parte do contrato reprodutivel.
 
 Revisao de frases:
@@ -139,6 +147,7 @@ Revisao de conceitos:
 - O conceito de `policy contract` precisa ficar mais concreto. Hoje ele aparece, mas sem dizer claramente do que ele e composto: trigger rule, effect schedule, window rule e horizon semantics.
 - O texto precisa separar melhor “notacao matematica” de “nome canonico de export”. Hoje isso fica implicito; para reproducibilidade, precisa ficar explicito.
 - O conceito de ancora bibliografica da policy ainda nao esta suficientemente internalizado na metodologia. Isso importa porque o paper quer defender que a policy foi parametrizada com referencia, nao inventada no corpo do notebook sem lastro.
+- O conceito de `mechanism-aware` tambem precisa ficar mais disciplinado: ele deve ser descrito como propagacao via proxies de engajamento inspiradas por uma logica externa de reengajamento, nao como simulacao empiricamente validada do efeito causal do paper de `Kay & Bostock (2023)`.
 
 Revisao de conclusoes:
 - A conclusao metodologica deve permanecer modesta: esta secao define e delimita o framework. Ela nao deve insinuar que o setup default ja foi “validado” ou “justificado empiricamente” aqui.
@@ -146,6 +155,8 @@ Revisao de conclusoes:
 
 Justificativas a incluir:
 - Justificar por que a ancora de `Kay & Bostock (2023)` e usada como referencia operacional do gatilho, dado que o OULAD nao traz log observacional de intervencao real.
+- Justificar por que covariaveis como `total_clicks` e outras features de estado entram como proxies inspiradas no mecanismo de participacao/reengajamento do paper-fonte, sem alegar equivalencia literal entre as variaveis do artigo e as covariaveis do notebook.
+- Justificar por que, se o pacote exportado atual sustenta principalmente o eixo click-based, o texto principal deve adotar essa leitura mais restrita do mecanismo.
 - Justificar por que a notacao compacta (`W`, `delta_shock`) e mantida nas equacoes mesmo quando os nomes exportados sao mais longos.
 - Justificar por que a policy spec completa precisa ser citada via `table_policy_spec.csv` e nao via a tabela compacta de parametros.
 
@@ -371,6 +382,35 @@ Justificativas a incluir:
 - Justificar por que o manuscrito faz questao de listar artefatos como `table_policy_spec.csv`, `table_policy_horizons_dual.csv` e `table_feature_set_provenance.csv`: eles sao parte do contrato de auditabilidade, nao anexos opcionais.
 - Justificar que a presenca de nomes canonicos exportados e importante porque o manuscrito precisa bater com o pacote reprodutivel final.
 
+### 10) `ref.bib`
+Status: revisao obrigatoria.
+
+Criticidade: media.
+
+Problemas identificados:
+- O arquivo ja contem varias referencias relevantes, mas a revisao atual ainda nao formaliza uma auditoria completa de integridade bibliografica.
+- A entrada `KayBostock2023PowerNudge` existe e parece correta, mas o manuscrito ainda nao a usa para ancorar nem o gatilho nem a inspiracao qualitativa do impacto em covariaveis de engajamento.
+- Ainda faltam checagens sistematicas de consistencia entre: referencias presentes em `ref.bib`, referencias efetivamente citadas nos `.tex`, e referencias metodologicas que continuam faltando no corpus.
+- A narrativa metodologica continua sem ancora explicita para alguns blocos importantes ja mapeados nesta revisao: `Platt1999ProbabilisticOutputs`, literatura de leakage/validation, fundacao de hazard discreto e referencia metodologica de `Random Survival Forest`.
+
+Direcao da futura alteracao:
+- Fazer uma revisao total de `ref.bib`, cobrindo integridade dos metadados, chaves BibTeX, consistencia de autores/titulo/ano/DOI/URL e aderencia ao que o manuscrito realmente cita.
+- Verificar se todas as referencias citadas nos `.tex` existem em `ref.bib` e se todas as referencias mantidas em `ref.bib` continuam justificadas pelo escopo do paper.
+- Conferir explicitamente a ancoragem bibliografica da policy em `KayBostock2023PowerNudge`, inclusive para a parte de logica de participacao/reengajamento inspiradora das covariaveis mechanism-aware.
+- Incluir a referencia metodologica de `Random Survival Forest` se esse baseline permanecer relevante na narrativa final.
+
+Revisao de conceitos:
+- A revisao bibliografica final nao deve ser tratada como limpeza editorial secundaria; ela faz parte do contrato de auditabilidade do paper.
+- O manuscrito precisa distinguir com clareza entre referencias que ancoram protocolo/metodo, referencias que ancoram inspiracao substantiva e referencias que apenas contextualizam o problema.
+
+Revisao de conclusoes:
+- O paper nao deve deixar implito que certos componentes estao “ancorados na literatura” se a citacao correspondente ainda nao aparece no texto.
+- Tambem nao convem manter referencias no `ref.bib` apenas por acumulacao historica se elas nao tiverem funcao defensavel no argumento final.
+
+Justificativas a incluir:
+- Justificar por que a revisao total do `ref.bib` e necessaria nesta etapa: o risco agora nao e apenas de estilo, mas de desalinhamento entre claims metodologicos e ancoragem bibliografica real.
+- Justificar por que a entrada de `KayBostock2023PowerNudge` precisa sustentar tanto o trigger quanto a inspiracao qualitativa das covariaveis de engajamento, sem inflar o grau de equivalencia empirica entre estudo-fonte e simulacao.
+
 ## Revisao transversal de frases, conceitos e conclusoes
 
 ### Frases que hoje soam fortes demais
@@ -408,6 +448,7 @@ Justificativas a incluir:
 
 1. Methodology:
 - por que a ancora de policy vem de `Kay & Bostock (2023)`.
+- por que as covariaveis mechanism-aware devem ser descritas como proxies de participacao/reengajamento inspiradas em `Kay & Bostock (2023)`, com linguagem compativel com o evidence package exportado.
 
 2. Experimental Design:
 - por que existem dois horizontes longos.
@@ -419,6 +460,10 @@ Justificativas a incluir:
 - por que `T_eval_policy = 38` pode aparecer para trajectory report, mas nao para IPCW metrics.
 - por que benchmark ainda importa mesmo sem lideranca universal do temporal.
 - por que um `Delta Gap` pequeno, mas com CI fora de zero, deve ser lido com prudencia.
+
+4. Bibliography:
+- por que o paper precisa de uma revisao total de `ref.bib` antes do fechamento final.
+- por que referencias-chave presentes no projeto, mas ainda nao citadas, nao podem continuar apenas como potencial de uso futuro.
 
 ## Sugestao de uso deste relatorio na proxima etapa
 
@@ -600,9 +645,10 @@ Leitura:
 1. `results_body.tex`
 2. `experimental_design_body.tex`
 3. `methodology_body.tex`
-4. `introduction_body.tex`
-5. `appendix_b_body.tex`
-6. `appendix_a_body.tex`
+4. `ref.bib`
+5. `introduction_body.tex`
+6. `appendix_b_body.tex`
+7. `appendix_a_body.tex`
 
 ## Arquivos que podem ficar como estao, salvo ajuste editorial fino
 

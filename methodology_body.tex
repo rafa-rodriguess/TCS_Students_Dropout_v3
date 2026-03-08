@@ -226,7 +226,14 @@ This weighting logic follows standard survival-prediction evaluation under right
 
 The current policy contract is anchored to the operational nudge rule discussed by Kay and Bostock \cite{KayBostock2023PowerNudge}. In the exported evidence package, the trigger is recorded as ``flag if no LMS engagement in last 7 days ($\approx \text{recency} \ge 1$ week)'' with weekly checking frequency and current trigger parameter $r^*=1$. This anchor is stored in the full policy specification artifact (\texttt{table\_policy\_spec.csv}) rather than in the compact scenario-parameter table.
 
-The effect schedule is frozen in the current protocol through the exported parameters $W\_\text{weeks}=2$, $\alpha_{week0}=0.35$, $\alpha_{week1}=0.10$, \texttt{decay\_type}=\texttt{kb2023\_step\_2w}, \texttt{window\_exclusive\_upper}=\texttt{True}, and \texttt{delta\_shock\_ablation}=0.20$. In the equations below, we retain the compact notation $W$ and $\delta_{shock}$ for readability, but these correspond to the canonical exported names \texttt{W\_weeks} and \texttt{delta\_shock\_ablation} in the artifact package.
+The trigger anchor follows Kay and Bostock \cite{KayBostock2023PowerNudge}, while the numerical effect schedule used here is the frozen scenario specification adopted in the current run. Concretely, the exported protocol records
+parameters $W_{\text{weeks}}=2$, $\alpha_{\text{week0}}=0.35$,
+$\alpha_{\text{week1}}=0.10$, and $\delta_{\text{shock}}=0.20$.
+The corresponding exported artifact fields are
+\nolinkurl{decay_type=kb2023_step_2w},
+\nolinkurl{window_exclusive_upper=True},
+\nolinkurl{W_weeks}, and
+\nolinkurl{delta_shock_ablation}.
 
 The intervention rule is triggered by recency crossing a threshold within an activation window:
 \begin{equation*}
@@ -319,4 +326,13 @@ Code for preprocessing, temporal splitting, training and calibration, policy sim
 \url{https://github.com/rafa-rodriguess/TCM-Student-Dropout}
 \cite{RafaRepoTCMStudentDropout}. The reference dataset used in the pipeline is OULAD \cite{Kuzilek2017OULAD}.
 
-This reproducibility layer supports the section's traceability claim by linking the formal description presented here to the implemented notebook workflow and its exported evidence artifacts. In particular, the artifact package records the full policy contract in \texttt{table\_policy\_spec.csv}, the compact effect-parameter snapshot in \texttt{table\_policy\_scenario\_params.csv}, and the dual-horizon semantics in \texttt{table\_policy\_horizons\_dual.csv}. Under the current exported protocol, these artifacts jointly encode the anchored trigger reference, the frozen effect parameters, and the distinction between $T_{policy}=18$, $T_{eval\_policy}=38$, and $T_{eval\_metrics}=37$.
+The reproducibility layer supports the section's traceability claim by linking
+the formal description presented here to the implemented notebook workflow and
+its exported evidence artifacts. The artifact package records the full policy
+contract in \nolinkurl{table_policy_spec.csv}, the compact effect-parameter
+snapshot in \nolinkurl{table_policy_scenario_params.csv}, and the dual-horizon
+semantics in \nolinkurl{table_policy_horizons_dual.csv}. Under the current
+exported protocol, these artifacts jointly encode the anchored trigger
+reference, the frozen effect parameters, and the distinction between
+$T_{\text{policy}}=18$, $T_{\text{eval,policy}}=38$, and
+$T_{\text{eval,metrics}}=37$.
