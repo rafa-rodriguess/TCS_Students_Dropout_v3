@@ -179,6 +179,7 @@ Figure~\ref{fig:deltas_rq2} is the primary figure for RQ2. The key readout is th
 \caption{RQ2 summary by shock-intensity scenario at $T_{policy}=18$ and $T_{eval\_policy}=38$.}
 \label{tab:rq2_summary}
 \small
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
 \hline
 Scenario & $\delta_{shock}$ & $\Delta S_{shock}(18)$ & $\Delta S_{shock}(38)$ & $\Delta S_{mech}(18)$ \\
@@ -188,6 +189,7 @@ Hypothetical A (reference) & 0.20 & 0.0260 & 0.0243 & -0.0006 \\
 Hypothetical B (stress test) & 0.60 & 0.0819 & 0.0760 & -0.0006 \\
 \hline
 \end{tabular}
+}
 \end{table}
 
 The shared mechanism-aware contrast is $\Delta S_{mech}(38)=-0.0062$ at $T_{eval\_policy}$, indicating that under the current schedule and propagated covariate channel, the mechanism-aware regime does not generate a positive survival gain in this run.
@@ -208,6 +210,7 @@ Table~\ref{tab:benchmark_horizon_results} summarizes event-by-horizon AUC at $T_
 \caption{Cross-family benchmark at reported horizons.}
 \label{tab:benchmark_horizon_results}
 \small
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcc}
 \hline
 Model family & AUC$(T_{policy})$ & AUC$(T_{eval\_metrics})$ \\
@@ -217,6 +220,7 @@ Temporal hazard + IPCW & 0.5220 & 0.5291 \\
 Non-temporal RSF & 0.6457 & 0.6388 \\
 \hline
 \end{tabular}
+}
 \end{table}
 
 A supplementary row-level check between the two temporal variants yields test AUCs of 0.8405 and 0.8395, an absolute difference of approximately 0.0010. The benchmark interpretation in this section is therefore anchored on the horizon-level comparison above.
