@@ -1,39 +1,19 @@
 \section{Appendix A: Supplementary Diagnostics Supporting the Core Claims}
 \label{app:a}
 
-This appendix includes only supplementary diagnostics that materially strengthen the interpretation of the core results reported in the main text. Its purpose is not to introduce new estimands, new policy regimes, or new empirical claims, but to reinforce the technical credibility of three central conclusions: censoring-aware temporal hazard reliability, mechanism-level interpretability of policy contrasts, and uncertainty-aware subgroup validation. By the end of this appendix, the reader should expect a compact set of supplementary figures that audit the assumptions and diagnostics underlying the main claims without expanding the substantive scope of the paper.
-
-The appendix follows the same evidence contract used in the main text. Each retained figure must either validate a technical assumption required for interpretation, explain a central magnitude pattern, or audit the uncertainty of a reported structural contrast. Under that rule, Appendix~A retains four diagnostic blocks and excludes peripheral visuals that do not materially change the argument.
+This appendix is intentionally compact and retains only diagnostics that are most directly tied to the paper objective: translating temporal risk into auditable structural policy and subgroup diagnostics. It does not introduce new estimands, new policy regimes, or causal claims.
 
 \subsection{Selection Rule for Supplementary Figures}
 
 A figure is included in Appendix~A only if it satisfies at least one of the following conditions:
 \begin{itemize}
-\item it validates a technical assumption required to interpret the main RQ1--RQ3 findings;
 \item it explains a key magnitude pattern reported in the main text;
 \item it audits uncertainty for a reported structural contrast.
 \end{itemize}
 
-This rule defines the appendix boundary. The role of the appendix is therefore supportive rather than exploratory: it extends auditability, but it does not alter the interpretive contract of the paper.
+This rule keeps the appendix supportive rather than exploratory.
 
-\subsection{A.1 IPCW Calibration Robustness}
-\label{app:a_ipcw_calibration}
-
-Figure~\ref{fig:app_calibration_ipcw} supports the reliability of censoring-aware calibration diagnostics. Its role is not to replace the main calibration evidence used in RQ1, but to verify that the central hazard-quality interpretation remains coherent when calibration is examined under IPCW conditions.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_calibration_ipcw_reliability_test.png}
-\caption{Supplementary IPCW calibration reliability on the test split. This figure is included because it strengthens the technical validity of the hazard-quality claim under censoring-aware evaluation.}
-\label{fig:app_calibration_ipcw}
-\end{figure}
-
-Numerical support for this panel should be read jointly with
-\texttt{table\_calibration\_ipcw\_metrics.csv}
-from the \texttt{outputs\_v2/tables} artifact folder.
-This supplementary figure therefore functions as a robustness audit for the main calibration claim rather than as an additional result in its own right.
-
-\subsection{A.2 Mechanism Diagnostics for the Policy Contrast}
+\subsection{A.1 Mechanism Diagnostics for the Policy Contrast}
 \label{app:a_policy_mechanism}
 
 The main text reports that the shock regime yields a substantially larger $\Delta S$ than the mechanism-aware regime under the default configuration. Figure~\ref{fig:app_policy_cov_deltas} is retained because it explains that difference mechanistically by showing the weekly covariate deltas induced by policy propagation.
@@ -49,13 +29,13 @@ The associated numeric summaries are reported in the
 \texttt{outputs\_v2/tables} artifact folder, specifically in
 \texttt{table\_policy\_covariate\_deltas\_by\_week.csv}
 and
-\texttt{table\_policy\_activation\_summary.csv}
+\texttt{table\_policy\_activation\_summary.csv}.
 This block is included because it strengthens interpretability: it shows how the simulated intervention propagates through the state variables and why the resulting structural contrast remains small in the mechanism-aware case.
 
-\subsection{A.3 Bootstrap Uncertainty Audit for RQ3}
+\subsection{A.2 Bootstrap Uncertainty Audit for RQ3}
 \label{app:a_rq3_bootstrap}
 
-Figures~\ref{fig:app_boot_tp} and \ref{fig:app_boot_te} are retained because they audit the stability of the subgroup change-in-gap signal reported for RQ3. Their purpose is to expose the bootstrap distributions underlying the reported confidence intervals, thereby providing distributional evidence rather than point summaries alone.
+Figure~\ref{fig:app_boot_tp} is retained because it audits the stability of the subgroup change-in-gap signal reported for RQ3 at the primary horizon.
 
 \begin{figure}[!t]
 \centering
@@ -64,37 +44,12 @@ Figures~\ref{fig:app_boot_tp} and \ref{fig:app_boot_te} are retained because the
 \label{fig:app_boot_tp}
 \end{figure}
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_rq3_bootstrap_hist_deltagap_Teval.png}
-\caption{Bootstrap distribution of $\Delta Gap(T_{eval\_metrics})$. Included to verify directional stability at the technical evaluation horizon.}
-\label{fig:app_boot_te}
-\end{figure}
-
 The compact confidence-interval summaries are reported in
 \texttt{rq3\_policy\_bootstrap\_wide.csv}, available in the
-\texttt{outputs\_v2/tables} artifact folder.
-These figures do not introduce a new subgroup result; rather, they make the uncertainty structure of the reported RQ3 findings more transparent and auditable.
+\texttt{outputs\_v2/tables} artifact folder, including both $T_{policy}$ and $T_{eval\_metrics}$ summaries. This block does not introduce a new subgroup result; it makes uncertainty auditing explicit.
 
-\subsection{A.4 Group Calibration Diagnostic for Fairness Interpretation}
-\label{app:a_group_calibration}
+\subsection{A.3 Appendix Boundary}
 
-Figure~\ref{fig:app_calibration_group} adds a final fairness-relevant diagnostic: calibration by group. It is included because subgroup contrast interpretation is stronger when predictive behavior is not severely asymmetric across groups.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.45\textwidth]{outputs_v2/figures/fig_calibration_by_group.png}
-\caption{Supplementary calibration-by-group diagnostic. Included to support interpretation of subgroup contrast results under comparable predictive behavior across groups.}
-\label{fig:app_calibration_group}
-\end{figure}
-
-The consolidated group metrics are available in
-\texttt{rq3\_fairness\_extended.csv}
-from the \texttt{outputs\_v2/tables} artifact folder.
-This figure should therefore be read as a diagnostic supporting the interpretability of subgroup contrasts, not as a separate fairness claim beyond the scope of RQ3.
-
-\subsection{A.5 Appendix Boundary}
-
-Appendix~A is intentionally constrained to diagnostics that materially support interpretation of the main claims. It does not introduce new estimands, new policy regimes, or new causal claims. Its function is to improve traceability, uncertainty auditing, and technical transparency for results already reported in the main text.
+Appendix~A is intentionally constrained to diagnostics with the highest relevance to the core argument. Additional diagnostics (for example, IPCW calibration robustness and calibration-by-group) remain available in the exported artifact package under \texttt{outputs\_v2/figures} and \texttt{outputs\_v2/tables}, but are omitted here to keep the appendix focused.
 
 Accordingly, all conclusions remain within the same contract used throughout the paper: the reported quantities are \textit{model-implied simulated regime contrasts} under explicit protocol rules, and the appendix serves only to strengthen the evidentiary basis for reading those contrasts.
