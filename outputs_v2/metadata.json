@@ -12,14 +12,27 @@
   },
   "figures": [
     "figures/fig_policy_deltaS_by_week_shock_vs_mech.png",
+    "figures/fig_policy_deltaS_by_week_shock_scenarios.png",
+    "figures/fig_policy_deltaS_at_horizons_scenarios.png",
+    "figures/fig_policy_deltaS_by_week_three_scenarios.png",
     "figures/fig_policy_survival_by_week_baseline_shock_mech.png"
   ],
   "policy": {
-    "deltaS_figure": "figures/fig_policy_deltaS_by_week_shock_vs_mech.png",
+    "covariate_impact_scope": "click_based_engagement_proxy_in_exported_run",
     "deltaS_tables": {
       "all": "tables/table_policy_deltaS_by_week_all.csv",
+      "horizon_scenarios": "tables/table_policy_deltaS_at_horizons_by_scenario.csv",
+      "horizons": "tables/table_policy_deltaS_at_horizons.csv",
+      "horizons_by_scenario": "tables/table_policy_deltaS_at_horizons_by_scenario.csv",
       "mech": "tables/table_policy_deltaS_by_week_mech.csv",
-      "shock": "tables/table_policy_deltaS_by_week_shock.csv"
+      "shock": "tables/table_policy_deltaS_by_week_shock.csv",
+      "weekly_by_scenario": "tables/table_policy_deltaS_by_week_by_scenario.csv",
+      "weekly_scenarios": "tables/table_policy_deltaS_by_week_by_scenario.csv"
+    },
+    "figures": {
+      "reference_deltaS": "figures/fig_policy_deltaS_by_week_shock_vs_mech.png",
+      "scenario_deltaS": "figures/fig_policy_deltaS_by_week_shock_scenarios.png",
+      "scenario_horizons_deltaS": "figures/fig_policy_deltaS_at_horizons_scenarios.png"
     },
     "horizons": {
       "T_eval_metrics": 37,
@@ -30,20 +43,91 @@
       "shock_ablation",
       "mechanism_aware_anchored"
     ],
-    "params": {
-      "W_weeks": 2,
-      "alpha_week0": 0.35,
-      "alpha_week1": 0.1,
-      "anchor_metric_week0": "",
-      "anchor_metric_week1": "",
-      "anchor_study": "",
-      "anchor_trigger_note": "",
-      "anchor_window_days": 14,
-      "decay_type": "kb2023_step_2w",
-      "delta_shock_ablation": 0.2,
-      "window_exclusive_upper": true
+    "operational_anchor": {
+      "active_window_weeks": 2,
+      "intervention_class": "short_term_digital_nudge",
+      "study": "Kay & Bostock (2023) \u2014 The Power of the Nudge: Technology Driving Persistence",
+      "trigger_frequency": "weekly",
+      "trigger_rule": "flag if no LMS engagement in last 7 days (\u2248 recency>=1 week)"
     },
-    "params_table": "tables/table_policy_scenario_params.csv",
+    "reference_scenario_id": "hypothetical_A",
+    "scenario_catalog_main_table": "tables/table_policy_scenarios_main.csv",
+    "scenario_catalog_table": "tables/table_policy_scenario_params.csv",
+    "scenario_count": 3,
+    "scenario_ids": [
+      "anchored_conservative",
+      "hypothetical_A",
+      "hypothetical_B"
+    ],
+    "scenario_params": [
+      {
+        "W_weeks": 2,
+        "alpha_week0": 0.35,
+        "alpha_week1": 0.1,
+        "anchor_metric_week0": "time_on_task_uplift_day7_35pct",
+        "anchor_metric_week1": "uplift_day14_lt_10pct",
+        "anchor_study": "Kay & Bostock (2023)",
+        "anchor_trigger_note": "weekly digital re-engagement nudge after 7 days without LMS activity",
+        "anchor_window_days": 14,
+        "decay_type": "kb2023_step_2w",
+        "delta_shock_ablation": 0.08,
+        "is_reference_scenario": 0,
+        "scenario_id": "anchored_conservative",
+        "scenario_label": "Conservative anchored",
+        "scenario_note": "Conservative anchored intensity",
+        "scenario_source": "SneyersDeWitte2018_anchored",
+        "scenario_status": "anchored",
+        "window_exclusive_upper": true
+      },
+      {
+        "W_weeks": 2,
+        "alpha_week0": 0.35,
+        "alpha_week1": 0.1,
+        "anchor_metric_week0": "time_on_task_uplift_day7_35pct",
+        "anchor_metric_week1": "uplift_day14_lt_10pct",
+        "anchor_study": "Kay & Bostock (2023)",
+        "anchor_trigger_note": "weekly digital re-engagement nudge after 7 days without LMS activity",
+        "anchor_window_days": 14,
+        "decay_type": "kb2023_step_2w",
+        "delta_shock_ablation": 0.2,
+        "is_reference_scenario": 1,
+        "scenario_id": "hypothetical_A",
+        "scenario_label": "Hypothetical A",
+        "scenario_note": "Legacy notebook baseline, now treated as hypothetical",
+        "scenario_source": "hypothetical_legacy_baseline",
+        "scenario_status": "hypothetical",
+        "window_exclusive_upper": true
+      },
+      {
+        "W_weeks": 2,
+        "alpha_week0": 0.35,
+        "alpha_week1": 0.1,
+        "anchor_metric_week0": "time_on_task_uplift_day7_35pct",
+        "anchor_metric_week1": "uplift_day14_lt_10pct",
+        "anchor_study": "Kay & Bostock (2023)",
+        "anchor_trigger_note": "weekly digital re-engagement nudge after 7 days without LMS activity",
+        "anchor_window_days": 14,
+        "decay_type": "kb2023_step_2w",
+        "delta_shock_ablation": 0.6,
+        "is_reference_scenario": 0,
+        "scenario_id": "hypothetical_B",
+        "scenario_label": "Hypothetical B",
+        "scenario_note": "Extreme stress-test intensity",
+        "scenario_source": "hypothetical_extreme_stress_test",
+        "scenario_status": "hypothetical",
+        "window_exclusive_upper": true
+      }
+    ],
+    "shock_intensity_framing": {
+      "anchored_note": "delta=0.08 is the anchored conservative scenario; higher deltas are hypothetical stress tests",
+      "anchored_scenarios": [
+        "anchored_conservative"
+      ],
+      "hypothetical_scenarios": [
+        "hypothetical_A",
+        "hypothetical_B"
+      ]
+    },
     "policy_spec": {
       "trigger": {
         "r_star": 1,
@@ -53,6 +137,40 @@
         "recency_proxy_col": "total_clicks",
         "trigger_frequency": "weekly"
       },
+      "effect_shared": {
+        "W": 2,
+        "alpha_week0": 0.35,
+        "alpha_week1": 0.1,
+        "decay_type": "kb2023_step_2w",
+        "window_exclusive_upper": true
+      },
+      "shock_scenarios": [
+        {
+          "scenario_id": "anchored_conservative",
+          "scenario_label": "Conservative anchored",
+          "delta_shock_ablation": 0.08,
+          "scenario_status": "anchored",
+          "scenario_source": "SneyersDeWitte2018_anchored",
+          "scenario_note": "Conservative anchored intensity"
+        },
+        {
+          "scenario_id": "hypothetical_A",
+          "scenario_label": "Hypothetical A",
+          "delta_shock_ablation": 0.2,
+          "scenario_status": "hypothetical",
+          "scenario_source": "hypothetical_legacy_baseline",
+          "scenario_note": "Legacy notebook baseline, now treated as hypothetical"
+        },
+        {
+          "scenario_id": "hypothetical_B",
+          "scenario_label": "Hypothetical B",
+          "delta_shock_ablation": 0.6,
+          "scenario_status": "hypothetical",
+          "scenario_source": "hypothetical_extreme_stress_test",
+          "scenario_note": "Extreme stress-test intensity"
+        }
+      ],
+      "reference_scenario_id": "hypothetical_A",
       "effect": {
         "W": 2,
         "alpha_week0": 0.35,
@@ -61,7 +179,7 @@
         "window_exclusive_upper": true,
         "delta_shock_ablation": 0.2
       },
-      "spec_hash_short_sha256": "ffe17bf61a58"
+      "spec_hash_short_sha256": "55329bcb152e"
     },
     "policy_spec_table": "tables/table_policy_spec.csv"
   },
@@ -69,12 +187,17 @@
     "tables/table_policy_deltaS_by_week_all.csv",
     "tables/table_policy_deltaS_by_week_shock.csv",
     "tables/table_policy_deltaS_by_week_mech.csv",
+    "tables/table_policy_deltaS_at_horizons.csv",
+    "tables/table_policy_deltaS_by_week_by_scenario.csv",
+    "tables/table_policy_deltaS_at_horizons_by_scenario.csv",
     "tables/table_policy_scenario_params.csv",
+    "tables/table_policy_scenarios_main.csv",
+    "tables/table_policy_deltaS_by_week_scenarios.csv",
+    "tables/table_policy_deltaS_at_horizons_scenarios.csv",
     "tables/table_survival_metrics_ipcw.csv",
     "tables/table_survival_metrics_ipcw_vs_base.csv",
     "tables/table_survival_metrics_ipcw_vs_base_unified.csv",
     "tables/table_ipcw_report_pack_deltas.csv",
-    "tables/table_policy_deltaS_at_horizons.csv",
     "tables/table_support_by_week.csv",
     "tables/table_policy_horizons_dual.csv"
   ],
@@ -105,7 +228,7 @@
       "T_policy": 18,
       "T_eval": 38,
       "T_eval_policy": 38,
-      "grid_size": 72,
+      "grid_size": 216,
       "deltaS_mech_Tpolicy_quantiles": {
         "q25": 0.0021384789186444,
         "median": 0.0028799264617344004,
@@ -118,9 +241,9 @@
         "alpha_week0": 0.5,
         "alpha_week1": 0.15,
         "deltaS_mech_Tpolicy": 0.0047248581834257,
-        "deltaS_shock_Tpolicy": 0.0028066587094476,
+        "deltaS_shock_Tpolicy": 0.0084730738331064,
         "deltaS_mech_Teval": 0.0025537060723536,
-        "deltaS_shock_Teval": 0.00159356872155
+        "deltaS_shock_Teval": 0.0048038672046472
       }
     }
   },
