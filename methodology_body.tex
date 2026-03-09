@@ -254,6 +254,8 @@ In the mechanism-aware regime, $X^{cf}_{it}$ is updated statefully across weeks.
 
 Operational details of this mechanism-aware operator are exported explicitly in \nolinkurl{table_policy_mech_operator_spec.csv} (channel mode, timing, overwrite rule, and propagation rule). The schedule sensitivity battery is exported in \nolinkurl{table_rq2_sensitivity_grid.csv} and varies trigger/schedule parameters while preserving the same plug-in modeling stack used for baseline scoring.
 
+The updated framework also includes a mechanism-validity gate and fragility diagnostics exported as \nolinkurl{table_policy_mech_validity_gate.csv}, \nolinkurl{table_policy_mech_channel_attribution.csv}, and \nolinkurl{table_policy_mech_fragility_by_scenario.csv}. These artifacts make the mechanism-aware branch auditable as an operator contract and explicitly separate robust structural contrast from channel-dependent fragility.
+
 \subsection{Structural Survival Contrast (RQ2)}
 
 The central policy estimand is mean survival under each regime:
