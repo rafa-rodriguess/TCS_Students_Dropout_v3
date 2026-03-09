@@ -220,7 +220,7 @@ w_{it}=\frac{1}{\max(\hat G_{it}, g_{min})}.
 
 This weighting logic follows standard survival-prediction evaluation under right censoring \cite{Graf1999AssessmentSurvivalPrediction,Gerds2006ConsistentBrier}. The protocol separates the policy reporting horizon from the technical horizon used for censoring-weighted metrics because IPCW evaluation becomes unstable when $\hat G(t)$ is too small, even if simulated regime trajectories remain computable beyond that point. In the current protocol, $g_{min}=0.05$ yields $T_{eval\_metrics}=37$, while $T_{eval\_policy}=38$ is retained only as the raw support horizon for trajectory reporting.
 
-Because non-event follow-up is anchored to last observed VLE activity, IPCW validity in this setup relies on conditional independent censoring given $X_{it}$ rather than unconditional random censoring. A sensitivity probe exported in \texttt{table\_censoring\_anchor\_sensitivity.csv} and \texttt{table\_censoring\_informativeness\_diagnostics.csv} showed that adding engagement features increased censoring-model test AUC from $0.8938$ to $0.9299$ ($\Delta=0.0361$), and that capped-weight share in test changed from $0.6576$ (current anchor) to $0.5029$ and $0.4945$ under one- and two-week non-event trims.
+Because non-event follow-up is anchored to last observed VLE activity, IPCW validity in this setup relies on conditional independent censoring given $X_{it}$ rather than unconditional random censoring. A sensitivity probe exported in \texttt{table\_censoring\_anchor\_sensitivity.csv} shows that across anchor variants the censoring-model test AUC ranges from $0.9155$ to $0.9299$, while capped-weight share in test ranges from $0.4945$ to $0.6576$ (current anchor at the upper end).
 
 \subsection{Policy Simulation (RQ2): Shock vs. Mechanism-Aware}
 
@@ -254,7 +254,7 @@ In the mechanism-aware regime, $X^{cf}_{it}$ is updated statefully across weeks.
 
 Operational details of this mechanism-aware operator are exported explicitly in \nolinkurl{table_policy_mech_operator_spec.csv} (channel mode, timing, overwrite rule, and propagation rule). The schedule sensitivity battery is exported in \nolinkurl{table_rq2_sensitivity_grid.csv} and varies trigger/schedule parameters while preserving the same plug-in modeling stack used for baseline scoring.
 
-The updated framework also includes a mechanism-validity gate and fragility diagnostics exported as \nolinkurl{table_policy_mech_validity_gate.csv}, \nolinkurl{table_policy_mech_channel_attribution.csv}, and \nolinkurl{table_policy_mech_fragility_by_scenario.csv}. These artifacts make the mechanism-aware branch auditable as an operator contract and explicitly separate robust structural contrast from channel-dependent fragility.
+The updated framework also keeps mechanism-aware execution auditable through run-level diagnostics exported as \nolinkurl{table_policy_activation_summary.csv}, \nolinkurl{table_policy_covariate_overwrites.csv}, and \nolinkurl{table_policy_covariate_propagation_checks.csv}, alongside the operator contract.
 
 \subsection{Structural Survival Contrast (RQ2)}
 

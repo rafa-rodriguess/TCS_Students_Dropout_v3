@@ -151,7 +151,7 @@ $G(38)$ & $\approx 10^{-12}$ (unstable) \\
 
 Weighted metrics and contrast summaries are interpreted only at horizons with acceptable censoring support. The distinction between $T_{policy}$, $T_{eval\_metrics}$, and $T_{eval\_policy}$ therefore determines where substantive claims are made.
 
-Additional censoring diagnostics from the new sensitivity exports (\texttt{table\_censoring\_anchor\_sensitivity.csv}, \texttt{table\_censoring\_informativeness\_diagnostics.csv}) indicate that censoring is strongly engagement-linked and anchor-dependent in this dataset. In test, censoring-model AUC increased from $0.8938$ (baseline without engagement features) to $0.9299$ (full model), while capped-weight share moved from $0.6576$ under the current anchor to $0.5029$ and $0.4945$ under one- and two-week non-event trims; these diagnostics are reported as robustness evidence, not as a replacement of the pre-specified primary horizons.
+Additional censoring diagnostics from the new sensitivity export (\texttt{table\_censoring\_anchor\_sensitivity.csv}) indicate that censoring is anchor-dependent in this dataset. In test, censoring-model AUC spans $0.9155$ to $0.9299$ across anchor variants, while capped-weight share spans $0.4945$ to $0.6576$; these diagnostics are reported as robustness evidence, not as a replacement of the pre-specified primary horizons.
 
 \begin{table*}[!t]
 \centering
@@ -226,7 +226,7 @@ The exported operator specification (\texttt{table\_policy\_mech\_operator\_spec
 The RQ2 grid sweep (
 \texttt{table\_rq2\_sensitivity\_grid.csv}, 216 configurations) varies trigger and schedule parameters ($r^*$, $W$, decay rule, $\alpha_{week0}$, $\alpha_{week1}$, and scenario intensity). In the exported package, this sweep does not add feature-channel variants beyond the click-based mechanism-aware operator.
 
-Under the updated protocol, mechanism-aware interpretation is conditioned on the mechanism-validity gate and fragility diagnostics (\texttt{table\_policy\_mech\_validity\_gate.csv}, \texttt{table\_policy\_mech\_channel\_attribution.csv}, \texttt{table\_policy\_mech\_fragility\_by\_scenario.csv}), which are reported as audit controls rather than as causal-identification evidence.
+Under the updated protocol, mechanism-aware interpretation is conditioned on run-level operator diagnostics (\texttt{table\_policy\_activation\_summary.csv}, \texttt{table\_policy\_covariate\_overwrites.csv}, \texttt{table\_policy\_covariate\_propagation\_checks.csv}), which are reported as audit controls rather than as causal-identification evidence.
 
 \paragraph*{RQ2 conclusion.}
 For RQ2, the main result is that the framework compares explicit regimes on a common temporal backbone and produces interpretable survival contrasts at fixed horizons. In the present configuration, positive contrasts are restricted to the shock branch and are highly scenario-dependent, while the mechanism-aware branch remains weak to negative under the current shared schedule.
