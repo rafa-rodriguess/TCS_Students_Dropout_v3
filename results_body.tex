@@ -223,24 +223,24 @@ For RQ2, the main result is that the framework compares explicit regimes on a co
 \subsection{Benchmark and Robustness Evidence}
 \label{subsec:benchmark_robust_results}
 
-In the current exported benchmark pack, the comparison is carried by the primary discrete-time hazard backbone, its IPCW-weighted variant, and the non-temporal enrollment-level RSF baseline.
+In the current exported benchmark pack, the primary cross-family comparison is carried by the discrete-time hazard backbone, its IPCW-weighted variant, and the non-temporal enrollment-level survival baseline (exported as \texttt{non\_temporal\_rsf}).
 
 \paragraph*{Cross-family benchmark.}
-Table~\ref{tab:benchmark_horizon_results} summarizes event-by-horizon AUC at $T_{policy}$ and $T_{eval\_metrics}$.
+Table~\ref{tab:benchmark_horizon_results} summarizes the primary IPCW event-by-horizon AUC at $T_{policy}$ and $T_{eval\_metrics}$; unweighted horizon AUC is retained only as supplementary diagnostic output.
 
 \begin{table}[!t]
 \centering
-\caption{Cross-family benchmark at reported horizons.}
+\caption{Cross-family IPCW benchmark at reported horizons (primary comparison).}
 \label{tab:benchmark_horizon_results}
 \small
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcc}
 \hline
-Model family & AUC$(T_{policy})$ & AUC$(T_{eval\_metrics})$ \\
+Model family & AUC$_{IPCW}(T_{policy})$ & AUC$_{IPCW}(T_{eval\_metrics})$ \\
 \hline
-Temporal hazard & 0.4803 & 0.4979 \\
-Temporal hazard + IPCW & 0.5220 & 0.5291 \\
-Non-temporal RSF & 0.6457 & 0.6388 \\
+Temporal hazard & 0.4310 & 0.5309 \\
+Temporal hazard + IPCW & 0.4865 & 0.5896 \\
+Non-temporal RSF & 0.6599 & 0.6345 \\
 \hline
 \end{tabular}
 }
