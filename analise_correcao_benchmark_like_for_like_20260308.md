@@ -158,3 +158,24 @@ Status do ipynb frente ao plano de correcao: **NAO corrigido ainda** para o cont
 	- existencia de `table_benchmark_horizon_ipcw_primary.csv`
 	- colunas `AUC_IPCW_event_by_T_policy` e `AUC_IPCW_event_by_T_eval_metrics`
 	- rotulo coerente do baseline nao-temporal (`non_temporal_rsf` vs `non_temporal_rf_fallback`).
+
+## Adendo de revalidacao (2026-03-09)
+
+### Correcao da leitura anterior
+
+A conclusao "NAO corrigido ainda" da rodada anterior ficou parcialmente invalida por estado local de arquivos.
+
+### Evidencia objetiva (estado atual)
+
+1. O arquivo IPCW principal esta presente no workspace e rastreado no `HEAD`:
+	- `outputs_v2/tables/table_benchmark_horizon_ipcw_primary.csv`
+
+2. Header do arquivo IPCW principal (9 colunas) inclui as metricas alvo:
+	- `AUC_IPCW_event_by_T_policy`
+	- `AUC_IPCW_event_by_T_eval_metrics`
+
+3. `table_benchmark_horizon_auc.csv` e `table_benchmark_unified.csv` tambem carregam colunas AUC unweighted + AUC IPCW no schema atual.
+
+### Conclusao atualizada
+
+No nivel de artefato CSV, o pacote de benchmark like-for-like esta **presente** para a parte de AUC IPCW por horizonte. A ausencia reportada antes deve ser tratada como falso negativo de sincronizacao/local state, nao como falha estrutural do notebook.
