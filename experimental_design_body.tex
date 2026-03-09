@@ -455,7 +455,7 @@ Algorithm~\ref{alg:pipeline} summarizes the end-to-end pipeline from data integr
 
 \State Build enrollment backbone keyed by $(\texttt{id\_student},\texttt{code\_module},\texttt{code\_presentation})$.
 \State Define endpoint: $E_i=\mathbb{1}[\texttt{Withdrawn} \wedge \texttt{date\_unregistration valid}]$; $t^{event}_i=\lfloor \texttt{date\_unregistration}/7 \rfloor$.
-\State Compute censoring anchor $t^{last}_i$ (last observed week with non-negative VLE activity; default 0).
+\State Compute censoring anchor $t^{last}_i$ (last observed VLE week as an observation proxy; default 0).
 \State Define $t^{final}_i$: $t^{event}_i$ if $E_i=1$; $t^{last}_i$ otherwise.
 \State Construct weekly person-period rows $t=0,\dots,t^{final}_i$ with $event_{it}=\mathbb{1}[E_i=1 \wedge t=t^{final}_i]$.
 \State Engineer weekly covariates $X_{it}$ (clicks, Recency, Streak, submitted) using $w(d)=\max(\lfloor d/7\rfloor,0)$.
@@ -481,7 +481,7 @@ The experimental design evaluates temporal predictive quality and structural reg
 Specifically:
 \begin{itemize}
 \item Policy and fairness results are \textit{model-implied simulated regime contrasts} under fixed scenario parameters, not observationally identified effects.
-\item The censoring treatment uses IPCW for evaluation diagnostics, but it does not apply censoring-weighted retraining or pursue causal identification strategies for potentially informative censoring.
+\item The censoring treatment uses IPCW for evaluation diagnostics, but it does not apply censoring-weighted retraining or pursue causal identification strategies for potentially informative censoring; post-hoc anchor sensitivity showed non-trivial variation in capped-weight share (test: $0.6576 \rightarrow 0.5029/0.4945$ under one-/two-week non-event trims), so censoring assumptions remain a practical source of uncertainty.
 \item Out-of-domain generalization is evaluated via leave-one-run-out, but the pooled training strategy does not explicitly model instructional heterogeneity across course runs.
 \item The endpoint sensitivity analysis does not impute event times for Fail cases; instead, it uses a terminal-time proxy based on the final observed week because OULAD does not provide an administrative withdrawal timestamp for Fail.
 \end{itemize}

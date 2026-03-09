@@ -151,6 +151,8 @@ $G(38)$ & $\approx 10^{-12}$ (unstable) \\
 
 Weighted metrics and contrast summaries are interpreted only at horizons with acceptable censoring support. The distinction between $T_{policy}$, $T_{eval\_metrics}$, and $T_{eval\_policy}$ therefore determines where substantive claims are made.
 
+Additional censoring diagnostics from the new sensitivity exports (\texttt{table\_censoring\_anchor\_sensitivity.csv}, \texttt{table\_censoring\_informativeness\_diagnostics.csv}) indicate that censoring is strongly engagement-linked and anchor-dependent in this dataset. In test, censoring-model AUC increased from $0.8938$ (baseline without engagement features) to $0.9299$ (full model), while capped-weight share moved from $0.6576$ under the current anchor to $0.5029$ and $0.4945$ under one- and two-week non-event trims; these diagnostics are reported as robustness evidence, not as a replacement of the pre-specified primary horizons.
+
 \begin{table*}[!t]
 \centering
 \footnotesize
