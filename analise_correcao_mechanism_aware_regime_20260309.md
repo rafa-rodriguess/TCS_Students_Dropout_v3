@@ -1,4 +1,4 @@
-# Analise e Proposta de Correcao — Mechanism-aware Regime (2026-03-09)
+sobre # Analise e Proposta de Correcao — Mechanism-aware Regime (2026-03-09)
 
 ## Pergunta auditada
 Mechanism-aware regime: detalhar sobrescritas de covariaveis (unidades, magnitudes, timing), interacao com escalonamento e propagacao temporal (`recency`, `streak`), escopo de varredura de parametros (`alpha_week0`, `alpha_week1`, regras de janela) e diagnosticos para `Delta S` negativo.
