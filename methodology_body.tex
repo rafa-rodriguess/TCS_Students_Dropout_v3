@@ -248,6 +248,8 @@ Under the \textit{mechanism-aware} regime, the policy propagates through counter
 
 In the mechanism-aware regime, $X^{cf}_{it}$ is updated statefully across weeks. In the exported run, the strongest perturbation channel is click-based engagement (\texttt{total\_clicks}), used as an LMS proxy analogous to participation and re-engagement dynamics discussed by Kay and Bostock \cite{KayBostock2023PowerNudge}, rather than as a literal replication of the source study variables. The shock regime applies an immediate model-level perturbation, whereas the mechanism-aware regime changes the evolving covariate path through which future hazards are generated.
 
+Operational details of this mechanism-aware operator are exported explicitly in \nolinkurl{table_policy_mech_operator_spec.csv} (channel mode, timing, overwrite rule, and propagation rule). The schedule sensitivity battery is exported in \nolinkurl{table_rq2_sensitivity_grid.csv} and varies trigger/schedule parameters while preserving the same plug-in modeling stack used for baseline scoring.
+
 \subsection{Structural Survival Contrast (RQ2)}
 
 The central policy estimand is mean survival under each regime:
@@ -310,7 +312,7 @@ contract in \nolinkurl{table_policy_spec.csv}, the scenario catalog in
 \nolinkurl{table_policy_scenario_params.csv}, and scenario-resolved trajectory
 outputs in \nolinkurl{table_policy_deltaS_by_week_by_scenario.csv} and
 \nolinkurl{table_policy_deltaS_at_horizons_by_scenario.csv}. It also records
-the dual-horizon semantics in \nolinkurl{table_policy_horizons_dual.csv}. Under the current exported protocol, these artifacts jointly encode the
+the dual-horizon semantics in \nolinkurl{table_policy_horizons_dual.csv}, the mechanism-aware operator contract in \nolinkurl{table_policy_mech_operator_spec.csv}, and the RQ2 schedule sensitivity grid in \nolinkurl{table_rq2_sensitivity_grid.csv}. Under the current exported protocol, these artifacts jointly encode the
 anchored trigger reference, the frozen shared mechanism-aware schedule, the
 anchored-vs-hypothetical shock intensity split, and the distinction between
 $T_{\text{policy}}=18$, $T_{\text{eval,policy}}=38$, and

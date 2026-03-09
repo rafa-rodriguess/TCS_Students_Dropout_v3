@@ -57,7 +57,7 @@ RQ1 &
 Yes, for temporal risk ranking, with caution in the highest-risk tail. Weekly hazard discrimination is stable (AUC train 0.8350, test 0.8405), while calibration is adequate in aggregate but sparsely supported in the highest-risk bins. \\
 
 RQ2 &
-Yes, for structural scenario comparison, but not for a uniform positive gain across branches. At $T_{policy}=18$, shock contrasts are $\Delta S=0.0102$ (anchored conservative, $\delta=0.08$), $0.0260$ (hypothetical A, $\delta=0.20$), and $0.0819$ (hypothetical B, $\delta=0.60$), while the mechanism-aware contrast is $\Delta S=-0.0006$. \\
+Yes, for structural scenario comparison, but not for a uniform positive gain across branches. At $T_{policy}=18$, shock contrasts are $\Delta S=0.0102$ (anchored conservative, $\delta=0.08$), $0.0260$ (hypothetical A, $\delta=0.20$), and $0.0819$ (hypothetical B, $\delta=0.60$), while the shared mechanism-aware contrast is $\Delta S=-0.0078$ (and $-0.0134$ at $T_{eval\_policy}=38$). \\
 
 RQ3 &
 Yes, in directional terms only. $\Delta Gap(T_{policy})=-0.00050816$ and $\Delta Gap(T_{eval\_metrics})=-0.00056691$, with 95\% bootstrap intervals excluding zero at both horizons, indicating a stable sign under the reported scenario at very small magnitude. \\
@@ -203,19 +203,26 @@ Figure~\ref{fig:deltas_rq2} is the primary figure for RQ2. The key readout is th
 \label{tab:rq2_summary}
 \small
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \hline
-Scenario & $\delta_{shock}$ & $\Delta S_{shock}(18)$ & $\Delta S_{shock}(38)$ & $\Delta S_{mech}(18)$ \\
+Scenario & $\delta_{shock}$ & $\Delta S_{shock}(18)$ & $\Delta S_{shock}(38)$ & $\Delta S_{mech}(18)$ & $\Delta S_{mech}(38)$ \\
 \hline
-Anchored conservative & 0.08 & 0.0102 & 0.0096 & -0.0006 \\
-Hypothetical A (reference) & 0.20 & 0.0260 & 0.0243 & -0.0006 \\
-Hypothetical B (stress test) & 0.60 & 0.0819 & 0.0760 & -0.0006 \\
+Anchored conservative & 0.08 & 0.0102 & 0.0096 & -0.0078 & -0.0134 \\
+Hypothetical A (reference) & 0.20 & 0.0260 & 0.0243 & -0.0078 & -0.0134 \\
+Hypothetical B (stress test) & 0.60 & 0.0819 & 0.0760 & -0.0078 & -0.0134 \\
 \hline
 \end{tabular}
 }
 \end{table}
 
-The shared mechanism-aware contrast is $\Delta S_{mech}(38)=-0.0062$ at $T_{eval\_policy}$, indicating that under the current schedule and propagated covariate channel, the mechanism-aware regime does not generate a positive survival gain in this run.
+The shared mechanism-aware contrast is $\Delta S_{mech}(38)=-0.0134$ at $T_{eval\_policy}$, indicating that under the current schedule and propagated covariate channel, the mechanism-aware regime does not generate a positive survival gain in this run.
+
+\paragraph*{Mechanism-aware diagnostics (reported run).}
+The exported operator specification (\texttt{table\_policy\_mech\_operator\_spec.csv}) records a click-based, stateful channel mode (\texttt{clicks\_plus\_stateful\_recency\_streak}) with $W=2$, $\alpha_{week0}=0.35$, and $\alpha_{week1}=0.10$. In the same run, overwrite diagnostics report changes concentrated in click-based rows (4{,}816 of 232{,}417 rows; 2.07\%) and no non-active propagation rows in the compact overwrite summary. Hazard-delta diagnostics on changed rows indicate opposite mean shifts by branch (mechanism-aware: $+0.000207$; shock: $-0.001719$), which is consistent with the observed negative $\Delta S_{mech}$ under the frozen shared schedule.
+
+\paragraph*{Sensitivity scope.}
+The RQ2 grid sweep (
+\texttt{table\_rq2\_sensitivity\_grid.csv}, 216 configurations) varies trigger and schedule parameters ($r^*$, $W$, decay rule, $\alpha_{week0}$, $\alpha_{week1}$, and scenario intensity). In the exported package, this sweep does not add feature-channel variants beyond the click-based mechanism-aware operator.
 
 \paragraph*{RQ2 conclusion.}
 For RQ2, the main result is that the framework compares explicit regimes on a common temporal backbone and produces interpretable survival contrasts at fixed horizons. In the present configuration, positive contrasts are restricted to the shock branch and are highly scenario-dependent, while the mechanism-aware branch remains weak to negative under the current shared schedule.

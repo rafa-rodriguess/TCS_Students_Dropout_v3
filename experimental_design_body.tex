@@ -308,6 +308,18 @@ hazard scaled by $(1-\delta_{shock,s})$ within active weeks, where $s$ indexes t
 covariates overwritten within active weeks (click-based engagement boosted by schedule factor, activity/recency/streak propagated statefully), then hazard recomputed via plug-in prediction. The click perturbation is an LMS proxy analogous to participation/re-engagement dynamics in Kay and Bostock (2023), not a literal variable-level replication \cite{Ahmadi2023LMSEngagementIndicators,Nkomo2021StudentEngagementDigitalTech}.
 \end{enumerate}
 
+For active rows, the mechanism-aware overwrite is implemented in the raw feature domain as
+\begin{equation*}
+\texttt{total\_clicks}^{cf}_{it}=\texttt{total\_clicks}_{it}\cdot b_{it},
+\quad
+b_{it}=\begin{cases}
+1+\alpha_{week0}, & t-t_i^*=0,\\
+1+\alpha_{week1}, & t-t_i^*=1,\\
+1, & \text{otherwise.}
+\end{cases}
+\end{equation*}
+with stateful propagation of activity-derived \texttt{recency}/\texttt{streak} under the active exported operator mode \nolinkurl{clicks_plus_stateful_recency_streak}. The resulting counterfactual rows are then passed through the same fitted preprocessing and prediction pipeline used for baseline scoring, preserving feature scaling and temporal ordering under a plug-in evaluation contract.
+
 Event rows are forced inactive in all regimes to prevent post-event counterfactual contamination.
 
 \paragraph*{Outputs reported.}
@@ -316,6 +328,8 @@ For each regime, survival is reconstructed via the discrete-time product, and th
 \Delta S(t)=\bar S^{(1)}(t)-\bar S^{(0)}(t).
 \]
 Primary reporting for policy trajectories focuses on $\Delta S(T_{policy})$ and $\Delta S(T_{eval\_policy})$ by scenario; censoring-weighted metric diagnostics remain tied to $T_{eval\_metrics}$.
+
+The reported sensitivity battery for RQ2 sweeps schedule/trigger parameters over a 216-point grid (\texttt{r\_star}, $W$, decay rule, $\alpha_{week0}$, $\alpha_{week1}$, and shock scenario intensity), exported in \nolinkurl{table_rq2_sensitivity_grid.csv}. In the current exported run, this sweep does not introduce additional intervention channels beyond the click-based mechanism-aware operator documented in \nolinkurl{table_policy_mech_operator_spec.csv}.
 
 %% -----------------------------------------------------------------------
 \subsection{Subgroup Evaluation Protocol (RQ3)}
