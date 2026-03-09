@@ -52,10 +52,11 @@ digraph pipeline_endtoend {
     // --- Benchmark layer ---
     subgraph cluster_bench {
         label="Track 5 — Benchmark (Model Families)"; style="dashed"; color="#666666"; fontsize=10;
-        B1 [label="Cox time-varying\n(penalizer=0.01)", fillcolor="#F5F5F5"];
-        B2 [label="HistGradientBoosting\n(temporal, tree-based)", fillcolor="#F5F5F5"];
+        B1 [label="Temporal hazard\n(active)", fillcolor="#F5F5F5"];
+        B2 [label="Temporal hazard + IPCW", fillcolor="#F5F5F5"];
         B3 [label="Random Survival Forest\n(non-temporal, enrollment-level)", fillcolor="#F5F5F5"];
-        B4 [label="Unified benchmark\ncomparison at T_policy=18\nand T_eval_metrics=37", fillcolor="#F5F5F5"];
+        B4 [label="Unified benchmark pack\n(temporal active, temporal+IPCW, RSF)\nat T_policy=18 and T_eval_metrics=37", fillcolor="#F5F5F5"];
+        B5 [label="Cox + HistGradientBoosting\nsecondary diagnostics", fillcolor="#F5F5F5", style="rounded,filled,dashed"];
     }
 
     // --- Policy layer ---
@@ -100,6 +101,7 @@ digraph pipeline_endtoend {
     S3 -> B1;
     S3 -> B2;
     S3 -> B3;
+    S3 -> B5;
     {B1 B2 B3} -> B4;
 
     S3 -> R1;

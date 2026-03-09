@@ -15,13 +15,15 @@ digraph benchmark_robustness {
     // --- Benchmark family ---
     subgraph cluster_bench {
         label="Benchmark Track\n(multi-family comparison)"; style="dashed"; color="#4A90D9"; fontsize=10;
-        BX1 [label="Cox time-varying\nstart–stop weekly\npenalizer=0.01", fillcolor="#D5E8D4"];
-        BX2 [label="Random Survival Forest\n(non-temporal, enrollment-level)", fillcolor="#D5E8D4"];
-        BX3 [label="HistGradientBoosting\n(temporal, tree-based)", fillcolor="#D5E8D4"];
+        BX1 [label="Temporal hazard\n(active)", fillcolor="#D5E8D4"];
+        BX2 [label="Temporal hazard + IPCW", fillcolor="#D5E8D4"];
+        BX3 [label="Random Survival Forest\n(non-temporal, enrollment-level)", fillcolor="#D5E8D4"];
     }
 
     // --- Unified evaluation ---
     UNIFIED [label="Unified benchmark readout\naligned at T_policy=18\nand T_eval_metrics=37", fillcolor="#FFF2CC"];
+
+    SEC [label="Secondary diagnostics\nCox time-varying + HistGradientBoosting\n(reported outside primary unified pack)", fillcolor="#F5F5F5", style="rounded,filled,dashed"];
 
     // --- Policy scenario contract context ---
     PSC [label="Policy scenario contract (RQ2 context)\ndelta_shock in {0.08, 0.20, 0.60}\nanchored + hypothetical stress tests", fillcolor="#FFE6CC"];
@@ -56,6 +58,7 @@ digraph benchmark_robustness {
     // --- Edges ---
     PRIMARY -> UNIFIED;
     {BX1 BX2 BX3} -> UNIFIED;
+    PRIMARY -> SEC;
 
     PRIMARY -> AB1;
     AB1 -> AB2 [label="remove"];

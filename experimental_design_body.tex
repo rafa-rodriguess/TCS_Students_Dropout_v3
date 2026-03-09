@@ -310,13 +310,16 @@ covariates overwritten within active weeks (click-based engagement boosted by sc
 
 For active rows, the mechanism-aware overwrite is implemented in the raw feature domain as
 \begin{equation*}
-\texttt{total\_clicks}^{cf}_{it}=\texttt{total\_clicks}_{it}\cdot b_{it},
-\quad
-b_{it}=\begin{cases}
+\begin{aligned}
+\texttt{total\_clicks}^{cf}_{it}
+&=\texttt{total\_clicks}_{it}\cdot b_{it},\\
+b_{it}
+&=\begin{cases}
 1+\alpha_{week0}, & t-t_i^*=0,\\
 1+\alpha_{week1}, & t-t_i^*=1,\\
 1, & \text{otherwise.}
 \end{cases}
+\end{aligned}
 \end{equation*}
 with stateful propagation of activity-derived \texttt{recency}/\texttt{streak} under the active exported operator mode \nolinkurl{clicks_plus_stateful_recency_streak}. The resulting counterfactual rows are then passed through the same fitted preprocessing and prediction pipeline used for baseline scoring, preserving feature scaling and temporal ordering under a plug-in evaluation contract.
 
@@ -468,7 +471,7 @@ Algorithm~\ref{alg:pipeline} summarizes the end-to-end pipeline from data integr
 \State \hspace{6pt} \textit{Shock:} $\hat h^{(1,shock,s)}_{it}=\hat h^{(0)}_{it}(1-\delta_{shock,s})$ when active.
 \State \hspace{6pt} \textit{Mechanism-aware:} overwrite covariates in the active window (primarily click-based engagement), propagate statefully, and recompute $\hat h^{(1,mech)}_{it}=f(X^{cf}_{it})$.
 \State Compute $\hat S^{(1)}_i(t)$ for each regime and scenario; report $\Delta S(T_{policy})$ and $\Delta S(T_{eval\_policy})$ by scenario.
-\State Report diagnostics: $AUC_{row}$, $BS_{IPCW}$, and IBS at both horizons.
+\State Report diagnostics: row-level $AUC_{row}$ on test person-period rows, plus $BS_{IPCW}$ and IBS at $T_{policy}$ and $T_{eval\_metrics}$.
 \State Perform subgroup validation (RQ3): compute $\bar\mu^{(a)}_g(t)$, $Gap^{(a)}(t)$, and $\Delta Gap(t)$ at $T_{policy}=18$ and $T_{eval\_metrics}=37$.
 \State \hspace{6pt} Summarize subgroup uncertainty using $B=500$ bootstrap confidence intervals.
 \end{algorithmic}
